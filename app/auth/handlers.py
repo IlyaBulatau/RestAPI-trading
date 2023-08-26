@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer
 
 from app.schemas.user import UserAuth, UserResponce
+from app.database import db
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -13,7 +14,8 @@ async def signup_process(user: UserAuth):
     """
     Handles registration process
     """
-    ...
+    user_id = await db.Database().create_user_in_db(user)
+    return UserResponce(login=user.username, email=user.email, id=user_id)
 
 @router.post(path="/signin")
 async def signin_process():

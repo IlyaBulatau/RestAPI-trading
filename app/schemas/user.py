@@ -24,6 +24,9 @@ class UserBase(BaseModel):
     
 
 class UserAuth(UserBase):
+    """
+    User schema for signup process
+    """
     password: str = Field(alias="password", 
                           title="Password",
                           description="User password",
@@ -32,7 +35,7 @@ class UserAuth(UserBase):
     
     
     @validator("password")
-    async def password_validate(cls, password: str) -> str:
+    def password_validate(cls, password: str) -> str:
         result = re.match(r'^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$', password)
         if not result:
             raise ValueError("the Password must be more than 8 characters long and contain letters of the English alphabet numbers and special characters")
@@ -40,4 +43,8 @@ class UserAuth(UserBase):
 
 
 class UserResponce(UserBase):
+    """
+    User schema for answer after signup process
+    """
     id: UUID4 = Field(default_factory=uuid.uuid4)
+
