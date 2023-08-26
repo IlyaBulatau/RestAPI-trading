@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.schemas.user import UserAuth, UserResponce, UserLogin
 from app.database import db
-from app.auth.actions import authenticate_user
+from app.auth.actions import authenticate_user, is_exists_user
 from app.utils.helpers import generate_token
 
 
@@ -20,8 +20,8 @@ async def signup_process(user: UserAuth):
     """
     Handles registration process
     """
-    # create user in database
-    # checking if user is exists
+    if is_exists_user(user):
+        return JSONResponse(content={"Result": {"Status": 200, "User status": "Is exists"}})
     user_id = await db.Database().create_user_in_db(user)
     return UserResponce(username=user.username, email=user.email, id=user_id)
 
