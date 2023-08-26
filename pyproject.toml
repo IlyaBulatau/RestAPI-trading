@@ -11,6 +11,8 @@ fastapi = {extras = ["all"], version = "^0.101.1"}
 aiohttp = "^3.8.5"
 alembic = "^1.11.3"
 sqlalchemy = "^2.0.20"
+asyncpg = "^0.28.0"
+pydantic-settings = "^2.0.3"
 
 
 [build-system]
