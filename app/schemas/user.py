@@ -38,7 +38,7 @@ class UserResponceBase(UserBase):
     :username
     """
     id: UUID4 = Field(default_factory=uuid.uuid4)
-    username: str = Field(alias="login", 
+    username: str = Field(alias="username", 
                           title="Username", 
                           description="Username for responce")
     
@@ -50,7 +50,7 @@ class UserAuth(UserAuthBase):
     :password
     :username
     """
-    username: str = Field(alias="login", 
+    username: str = Field(alias="username", 
                           title="Username", 
                           description="Username for registration process",
                           min_length=4,
@@ -70,7 +70,8 @@ class UserLogin(UserAuthBase):
     """
     @validator("password")
     def password_validate(cls, password):
-        super().password_validate(UserLogin, password)
+        super().password_validate(password)
+        return password
 
 
 class UserResponce(UserResponceBase):
