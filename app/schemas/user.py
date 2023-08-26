@@ -1,31 +1,22 @@
 from pydantic import BaseModel, EmailStr, Field, validator, UUID4
+from app.utils import validators as val
 
-import re
 import uuid
 
 
 class UserBase(BaseModel):
     """
-    Base user model
+    User base model
+    :email
     """
-    username: str = Field(alias="login", 
-                          title="Username", 
-                          description="Username for registration process",
-                          min_length=4,
-                          max_length=20)
     email: EmailStr
-    
-    @validator("username")
-    def username_validate(cls, username: str) -> str:
-        result = re.match(r"^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$", username)
-        if not result:
-            raise ValueError("Username must be a word or set of words separated by 1 space or underscore")
-        return username
-    
 
-class UserAuth(UserBase):
+
+class UserAuthBase(UserBase):
     """
-    User schema for signup process
+    Base models for auth processes user
+    :email
+    :password
     """
     password: str = Field(alias="password", 
                           title="Password",
@@ -33,18 +24,62 @@ class UserAuth(UserBase):
                           min_length=8,
                           max_length=90)
     
-    
     @validator("password")
     def password_validate(cls, password: str) -> str:
-        result = re.match(r'^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$', password)
-        if not result:
-            raise ValueError("the Password must be more than 8 characters long and contain letters of the English alphabet numbers and special characters")
+        val.password_validate(password)
         return password
 
 
-class UserResponce(UserBase):
+class UserResponceBase(UserBase):
     """
-    User schema for answer after signup process
+    Base model for responce process user
+    :email
+    :id
+    :username
     """
     id: UUID4 = Field(default_factory=uuid.uuid4)
+    username: str = Field(alias="login", 
+                          title="Username", 
+                          description="Username for responce")
+    
+
+class UserAuth(UserAuthBase):
+    """
+    User schema for signup process
+    :email
+    :password
+    :username
+    """
+    username: str = Field(alias="login", 
+                          title="Username", 
+                          description="Username for registration process",
+                          min_length=4,
+                          max_length=20)
+    
+    @validator("username")
+    def username_validate(cls, username: str) -> str:
+        val.username_validate(username)
+        return username
+    
+
+class UserLogin(UserAuthBase):
+    """
+    User schema for signin process
+    :email
+    :password
+    """
+    @validator("password")
+    def password_validate(cls, password):
+        super().password_validate(UserLogin, password)
+
+
+class UserResponce(UserResponceBase):
+    """
+    User schema for answer after signup process
+    :email
+    :username
+    :id
+    """
+    pass
+
 

@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from fastapi.security import OAuth2PasswordBearer
 
-from app.schemas.user import UserAuth, UserResponce
+from app.schemas.user import UserAuth, UserResponce, UserLogin
 from app.database import db
 
 
@@ -18,8 +18,9 @@ async def signup_process(user: UserAuth):
     return UserResponce(login=user.username, email=user.email, id=user_id)
 
 @router.post(path="/signin")
-async def signin_process():
+async def signin_process(user: UserLogin):
     """
     Handles getting token process
     """
     ...
+    

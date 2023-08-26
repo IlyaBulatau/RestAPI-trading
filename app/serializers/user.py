@@ -14,8 +14,8 @@ class UserSerializer:
         """
         serialize user data before save in DB
         """
-        return {
-            "username": self.data.username,
-            "email": self.data.email ,
-            "hash_password": hashed_password(self.data.password)
-        }
+        data_to_dict = dict(self.data)
+        hash_password = hashed_password(data_to_dict.pop("password"))
+        data_to_dict.update({"hash_password": hash_password})
+        
+        return data_to_dict 
