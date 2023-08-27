@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from app.settings.config import TokenSettings
 from app.schemas.token import Payload
 
+
 def hashed_password(password: str) -> str:
     """
     Hashed password for save in database

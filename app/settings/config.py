@@ -1,11 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import PostgresDsn
 
-from pathlib import Path
-
-
-PATH_TO_ENV = Path().absolute().joinpath(".env")
-
 
 class Settings(BaseSettings):
     ...    
