@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field, validator, UUID4
 from app.utils import validators as val
 
+from datetime import datetime
 import uuid
 
 
@@ -37,7 +38,6 @@ class UserResponceBase(UserBase):
     :id
     :username
     """
-    id: UUID4 = Field(default_factory=uuid.uuid4)
     username: str = Field(alias="username", 
                           title="Username", 
                           description="Username for responce")
@@ -81,6 +81,14 @@ class UserResponce(UserResponceBase):
     :username
     :id
     """
-    pass
+    id: UUID4 = Field(default_factory=uuid.uuid4)
 
 
+class UserInfo(UserResponceBase):
+    """
+    User schema for response in gateway /api/me
+    :email
+    :username
+    :create_on
+    """
+    create_on: datetime | str

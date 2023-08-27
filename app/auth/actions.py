@@ -9,6 +9,7 @@ from app.auth.verify_token import verify_payload_from_token, verify_token_email,
 from typing import Annotated
 
 from jose import jwt
+from jose.exceptions import ExpiredSignatureError
 from fastapi.exceptions import HTTPException
 from fastapi import status, Depends
 from fastapi.security import OAuth2PasswordBearer
@@ -41,8 +42,11 @@ async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):
     """
     Accept token from request header and decode in payload(dict), which contains user_id, email and exp keys
     """
-    payload = jwt.decode(token=token, key=TokenSettings().TOKEN_KEY, algorithms=TokenSettings().TOKEN_ALGORITHM)
-    return payload
+    try:
+        payload = jwt.decode(token=token, key=TokenSettings().TOKEN_KEY, algorithms=TokenSettings().TOKEN_ALGORITHM)
+        return payload
+    except ExpiredSignatureError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
 
 async def get_current_user(payload: Annotated[dict, Depends(get_token_payload)]) -> User:
     """
