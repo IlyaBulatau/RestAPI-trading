@@ -20,12 +20,15 @@ def verify_password(password: str, hash_password: str) -> bool:
     """
     return pbkdf2_sha256.verify(password, hash_password)
     
-def generate_token(payload: Payload, exp: datetime = None):
+def generate_token(payload: Payload, exp: datetime = None) -> str:
+    """
+    Accept Payload schema and serializes it in dict and returning token with dict payload
+    """
     finish_payload = dict(payload)
     if not exp:
-        expire = datetime.now() + timedelta(minutes=int(TokenSettings().TOKEN_LIMIT_MINUTES))
+        expire = datetime.utcnow() + timedelta(minutes=int(TokenSettings().TOKEN_LIMIT_MINUTES))
     else:
-        expire = datetime.now() + exp
+        expire = datetime.utcnow() + exp
     finish_payload.update({"exp": expire})
     token = jwt.encode(finish_payload, 
                        key=TokenSettings().TOKEN_KEY, 
