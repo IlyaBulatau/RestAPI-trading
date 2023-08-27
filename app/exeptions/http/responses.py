@@ -12,7 +12,7 @@ class ResponseGenerator:
         self.args = args
 
     def generate_response(self, schema: UserExeptionResponse | Any = UserExeptionResponse):
-        if self.args:
+        if self.args != ():
             text = self.description[1].format(*self.args)
         else:
             text = self.description[1]
