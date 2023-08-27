@@ -5,7 +5,8 @@ from app.database.models.user import User
 from app.database.db import Database
 from app.settings.config import TokenSettings
 from app.auth.verify_token import verify_payload_from_token, verify_token_email, verify_token_time
-from app.exeptions.http.responses import generate_response_for_email_exeption
+from app.exeptions.http.responses import ResponseGenerator
+from app.exeptions.http.response_text import TEXT_EMAIL_IS_EXISTS, TITLE_EMAIL_EXEPTION
 
 from typing import Annotated
 
@@ -38,8 +39,13 @@ async def is_exists_user(user: UserAuth) -> User:
     user_from_db = await Database().get_user_by_email(user.email)
     if user_from_db:
         status_code = status.HTTP_401_UNAUTHORIZED
-        raise HTTPException(status_code=status_code, 
-                            detail=generate_response_for_email_exeption(user.email, status_code))
+        response = ResponseGenerator(
+            user.email,
+            title=TITLE_EMAIL_EXEPTION,
+            status_code=status_code,
+            descriptions=("email", TEXT_EMAIL_IS_EXISTS)).generate_response()
+        
+        raise HTTPException(status_code=status_code, detail=response)
     return user
 
 async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):

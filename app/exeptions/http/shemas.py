@@ -10,7 +10,7 @@ class Desciption(BaseModel):
     text: str | None
 
 
-class UserEmailNotFoundResponse(BaseModel):
+class UserExeptionResponse(BaseModel):
     """
     response scheme when a user enters an existing email during registration
     """
@@ -18,6 +18,6 @@ class UserEmailNotFoundResponse(BaseModel):
                        description="Title http exeption")
     status: int = Field(alias="status",
                         description="Http response status")
-    description: Dict = Field(alias="detail",
+    description: Dict = Field(alias="description",
                               description="The field include data about invalid email")
     

@@ -1,1 +1,1 @@
-TEXT_EMAIL_IS_EXISTS="{email} is exists"
+TEXT_EMAIL_IS_EXISTS="{0} is exists"
