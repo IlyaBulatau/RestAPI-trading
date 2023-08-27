@@ -4,6 +4,7 @@ from jose import jwt
 from datetime import datetime, timedelta
 
 from app.settings.config import TokenSettings
+from app.schemas.token import Payload
 
 def hashed_password(password: str) -> str:
     """
@@ -19,13 +20,14 @@ def verify_password(password: str, hash_password: str) -> bool:
     """
     return pbkdf2_sha256.verify(password, hash_password)
     
-def generate_token(payload: dict, exp: datetime = None):
+def generate_token(payload: Payload, exp: datetime = None):
+    finish_payload = dict(payload)
     if not exp:
         expire = datetime.now() + timedelta(minutes=int(TokenSettings().TOKEN_LIMIT_MINUTES))
     else:
         expire = datetime.now() + exp
-    payload.update({"exp": expire})
-    token = jwt.encode(payload, 
+    finish_payload.update({"exp": expire})
+    token = jwt.encode(finish_payload, 
                        key=TokenSettings().TOKEN_KEY, 
                        algorithm=TokenSettings().TOKEN_ALGORITHM)
     return token

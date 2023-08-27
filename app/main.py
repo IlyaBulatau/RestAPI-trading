@@ -6,3 +6,5 @@ from app.settings.setups_app import setup_app
 app = FastAPI()
 
 setup_app(app)
+
+# TODO - сделать схему responces
