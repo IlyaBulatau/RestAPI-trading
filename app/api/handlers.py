@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends
 from typing import Annotated
 
 
-router = APIRouter(prefix="/api", tags=["api"])
+router = APIRouter(prefix="/v1/api", tags=["api"])
 
 
 @router.get("/me", 

@@ -91,4 +91,6 @@ class UserInfo(UserResponceBase):
     :username
     :create_on
     """
-    create_on: datetime | str
+    create_on: datetime | str = Field(alias="create_on",
+                                      title="create time",
+                                      description="Create time user registration")

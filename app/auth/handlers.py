@@ -18,12 +18,10 @@ router = APIRouter(prefix="/auth", tags=["auth"])
             response_model=UserResponce, 
             status_code=201, 
             response_description="Responce userID, username and email")
-async def signup_process(user: UserAuth):
+async def signup_process(user: Annotated[UserAuth, Depends(is_exists_user)]):
     """
     Handles registration process
-    """
-    if is_exists_user(user):
-        return JSONResponse(content={"Result": {"Status": 200, "Operation": "Not exists, this is user is exists"}})
+    """ 
     user_id = await db.Database().create_user_in_db(user)
     return UserResponce(username=user.username, email=user.email, id=user_id)
 
@@ -34,10 +32,6 @@ async def signup_process(user: UserAuth):
 async def signin_process(user: Annotated[User, Depends(authenticate_user)]):
     """
     Handles getting token process
-    """
-    if not user:
-        return JSONResponse(content={"Error": {"Invalid Data": "Check correct username and password", "Status": 401}}, 
-                       status_code=status.HTTP_401_UNAUTHORIZED)
-    
+    """    
     token = generate_token(payload=Payload(user_id=str(user.id), email=user.email))
     return Token(token=token)
