@@ -25,7 +25,9 @@ async def authenticate_user(user: UserLogin) -> User:
     The func conducts the authentication process
     """
     user_from_db = await Database().get_user_by_email(user.email)
+    # if user not found in database
     if not user_from_db:
+        # generate error response
         status_code = status.HTTP_401_UNAUTHORIZED
         response = ResponseGenerator(
             user.email,
@@ -34,7 +36,9 @@ async def authenticate_user(user: UserLogin) -> User:
             descriptions=("email", RT.TEXT_EMAIL_NOT_FOUND)).generate_response()
 
         raise HTTPException(status_code=status_code,detail=response)
+    # password invalid
     if not verify_password(password=user.password, hash_password=user_from_db.hash_password):
+        # generate error response
         status_code = status.HTTP_401_UNAUTHORIZED
         response = ResponseGenerator(
             title=RT.TITLE_PASSWORD_EXEPTION,
