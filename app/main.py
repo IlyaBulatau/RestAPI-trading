@@ -8,3 +8,4 @@ app = FastAPI()
 setup_app(app)
 
 # TODO - сделать схему responces
+

@@ -1,0 +1,1 @@
+TEXT_EMAIL_IS_EXISTS="{email} is exists"

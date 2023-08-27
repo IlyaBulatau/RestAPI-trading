@@ -5,6 +5,7 @@ from app.database.models.user import User
 from app.database.db import Database
 from app.settings.config import TokenSettings
 from app.auth.verify_token import verify_payload_from_token, verify_token_email, verify_token_time
+from app.exeptions.http.responses import generate_response_for_email_exeption
 
 from typing import Annotated
 
@@ -24,7 +25,7 @@ async def authenticate_user(user: UserLogin) -> User:
     """
     user_from_db = await Database().get_user_by_email(user.email)
     if not user_from_db:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You email not found")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Email not Found")
     if not verify_password(password=user.password, hash_password=user_from_db.hash_password):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Password is invalid")
     return user_from_db
@@ -36,7 +37,9 @@ async def is_exists_user(user: UserAuth) -> User:
     """
     user_from_db = await Database().get_user_by_email(user.email)
     if user_from_db:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User with the email exists")
+        status_code = status.HTTP_401_UNAUTHORIZED
+        raise HTTPException(status_code=status_code, 
+                            detail=generate_response_for_email_exeption(user.email, status_code))
     return user
 
 async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):
