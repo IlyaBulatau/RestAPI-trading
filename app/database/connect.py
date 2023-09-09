@@ -5,8 +5,12 @@ from contextlib import asynccontextmanager
 from app.settings.config import DataBaseSettings
 
 
-async_engine = create_async_engine(url=DataBaseSettings().get_url(), echo=True, future=True)
-async_session = async_sessionmaker(bind=async_engine, expire_on_commit=False, class_=AsyncSession)
+async_engine = create_async_engine(
+    url=DataBaseSettings().get_url(), echo=True, future=True
+)
+async_session = async_sessionmaker(
+    bind=async_engine, expire_on_commit=False, class_=AsyncSession
+)
 
 
 @asynccontextmanager

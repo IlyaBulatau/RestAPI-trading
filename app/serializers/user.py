@@ -24,32 +24,39 @@ class UserSerializer:
         data_to_dict = dict(self.data)
         hash_password = hashed_password(data_to_dict.pop("password"))
         data_to_dict.update({"hash_password": hash_password})
-        
-        return data_to_dict 
-    
+
+        return data_to_dict
+
     def responce_user_info(self) -> UserInfo:
         """
         serialize database user model to schema UserInfo
         """
         user: User = self.data
         create_on = self.serialize_datatime_field(user.created_on)
-        return UserInfo(email=user.email, 
-                        username=user.username, 
-                        create_on=create_on,)
-    
+        return UserInfo(
+            email=user.email,
+            username=user.username,
+            create_on=create_on,
+        )
+
     def response_user_info_list(self) -> list[UserInfo]:
         """
-        serilize list with user models to list with UserInfo schemas 
+        serilize list with user models to list with UserInfo schemas
         and add payload to each object
         """
         users: list[User] = self.data
-        serialize_users_list = [UserInfo(email=user.email,
-                                    username=user.username,
-                                    create_on=self.serialize_datatime_field(user.created_on),
-                                    payload=PayloadResponse(links=links_to_get_users_process(user.username)))\
-                            for user in users]
+        serialize_users_list = [
+            UserInfo(
+                email=user.email,
+                username=user.username,
+                create_on=self.serialize_datatime_field(user.created_on),
+                payload=PayloadResponse(
+                    links=links_to_get_users_process(user.username)
+                ),
+            )
+            for user in users
+        ]
         return serialize_users_list
-
 
     def serialize_datatime_field(self, datetime_obj: datetime) -> str:
         """

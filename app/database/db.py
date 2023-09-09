@@ -9,11 +9,10 @@ from sqlalchemy import UUID, select
 
 
 class Database:
-
     async def create_user_in_db(self, user: UserAuth) -> UUID:
         """
         Create new user in the database
-        Return UUID the user 
+        Return UUID the user
         """
         user_data = UserSerializer(user).to_save_in_db()
         save_user = User(**user_data)
@@ -21,13 +20,13 @@ class Database:
             session: AsyncSession
             session.add(save_user)
         return save_user.id
-    
+
     async def get_user_by_email(self, email) -> User:
         """
         Accepts validated email and looks up the user in the database
         """
         query = select(User).where(User.email == email)
-        async  with get_session() as session:
+        async with get_session() as session:
             session: AsyncSession
             result = await session.execute(query)
             user = result.scalars().first()
@@ -43,7 +42,6 @@ class Database:
             result = await session.execute(query)
             user = result.scalars().first()
         return user
-        
 
     async def get_users_from_db(self, limit, offset):
         """

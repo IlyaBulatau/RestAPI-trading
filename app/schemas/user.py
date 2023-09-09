@@ -12,6 +12,7 @@ class UserBase(BaseModel):
     User base model
     :email
     """
+
     email: EmailStr
 
 
@@ -21,12 +22,15 @@ class UserAuthBase(UserBase):
     :email
     :password
     """
-    password: str = Field(alias="password", 
-                          title="Password",
-                          description="User password",
-                          min_length=8,
-                          max_length=90)
-    
+
+    password: str = Field(
+        alias="password",
+        title="Password",
+        description="User password",
+        min_length=8,
+        max_length=90,
+    )
+
     @validator("password")
     def password_validate(cls, password: str) -> str:
         val.password_validate(password)
@@ -39,9 +43,10 @@ class UserResponceBase(UserBase):
     :email
     :username
     """
-    username: str = Field(alias="username", 
-                          title="Username", 
-                          description="Username for responce")
+
+    username: str = Field(
+        alias="username", title="Username", description="Username for responce"
+    )
 
 
 class UserAuth(UserAuthBase):
@@ -51,17 +56,20 @@ class UserAuth(UserAuthBase):
     :password
     :username
     """
-    username: str = Field(alias="username", 
-                          title="Username", 
-                          description="Username for registration process",
-                          min_length=4,
-                          max_length=20)
-    
+
+    username: str = Field(
+        alias="username",
+        title="Username",
+        description="Username for registration process",
+        min_length=4,
+        max_length=20,
+    )
+
     @validator("username")
     def username_validate(cls, username: str) -> str:
         val.username_validate(username)
         return username
-    
+
 
 class UserLogin(UserAuthBase):
     """
@@ -69,6 +77,7 @@ class UserLogin(UserAuthBase):
     :email
     :password
     """
+
     @validator("password")
     def password_validate(cls, password):
         super().password_validate(password)
@@ -82,6 +91,7 @@ class UserResponce(UserResponceBase):
     :username
     :id
     """
+
     id: UUID4 = Field(default_factory=uuid.uuid4)
     payload: PayloadResponse = Field(default_factory=PayloadResponse)
 
@@ -93,8 +103,10 @@ class UserInfo(UserResponceBase):
     :username
     :create_on
     """
-    create_on: datetime | str = Field(alias="create_on",
-                                      title="create time",
-                                      description="Create time user registration")
-    payload: PayloadResponse = Field(default_factory=PayloadResponse)
 
+    create_on: datetime | str = Field(
+        alias="create_on",
+        title="create time",
+        description="Create time user registration",
+    )
+    payload: PayloadResponse = Field(default_factory=PayloadResponse)

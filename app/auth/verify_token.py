@@ -13,7 +13,10 @@ async def verify_token_time(exp: datetime) -> None:
     Checking token time exp and compare with datetime now
     """
     if datetime.utcnow() > exp:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token time is up")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token time is up"
+        )
+
 
 async def verify_token_email(email: str) -> User:
     """
@@ -23,7 +26,9 @@ async def verify_token_email(email: str) -> User:
     user = await Database().get_user_by_email(email)
     if user:
         return user
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="You token is invalid")
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, detail="You token is invalid"
+    )
 
 
 async def verify_payload_from_token(payload: dict) -> Payload:
@@ -39,5 +44,7 @@ async def verify_payload_from_token(payload: dict) -> Payload:
     verify_payload = Payload(**copy_payload)
 
     if copy_payload != dict(verify_payload):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+        )
     return verify_payload

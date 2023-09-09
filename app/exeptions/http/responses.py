@@ -7,8 +7,10 @@ class ResponseGenerator:
     """
     Generate response for error handlers
     """
-    
-    def __init__(self, *args, title: str, status_code: int, descriptions: tuple[str, str]):
+
+    def __init__(
+        self, *args, title: str, status_code: int, descriptions: tuple[str, str]
+    ):
         """
         :title - text for title response field
         :status_code - response status for detail msg
@@ -19,7 +21,9 @@ class ResponseGenerator:
         self.description = descriptions
         self.args = args
 
-    def generate_response(self, schema: UserExeptionResponse | Any = UserExeptionResponse):
+    def generate_response(
+        self, schema: UserExeptionResponse | Any = UserExeptionResponse
+    ):
         """
         genereta json shema for response
         """
@@ -28,11 +32,10 @@ class ResponseGenerator:
         else:
             text = self.description[1]
 
-        description = Desciption(
-            field=self.description[0],
-            text=text
+        description = Desciption(field=self.description[0], text=text)
+
+        return dict(
+            schema(
+                title=self.title, status=self.status_code, description=dict(description)
+            )
         )
-
-        return dict(schema(title=self.title, status=self.status_code, description=dict(description)))
-        
-

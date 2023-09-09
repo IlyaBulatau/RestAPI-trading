@@ -4,7 +4,11 @@ from app.utils.helpers import verify_password
 from app.database.models.user import User
 from app.database.db import Database
 from app.settings.config import TokenSettings
-from app.auth.verify_token import verify_payload_from_token, verify_token_email, verify_token_time
+from app.auth.verify_token import (
+    verify_payload_from_token,
+    verify_token_email,
+    verify_token_time,
+)
 from app.exeptions.http.responses import ResponseGenerator
 from app.exeptions.http import response_text as RT
 
@@ -17,7 +21,11 @@ from fastapi import status, Depends
 from fastapi.security import OAuth2PasswordBearer
 
 
-oauth_schema = OAuth2PasswordBearer("signin", scheme_name="get_token", description="get token from authorization headers")
+oauth_schema = OAuth2PasswordBearer(
+    "signin",
+    scheme_name="get_token",
+    description="get token from authorization headers",
+)
 
 
 async def authenticate_user(user: UserLogin) -> User:
@@ -33,21 +41,26 @@ async def authenticate_user(user: UserLogin) -> User:
             user.email,
             title=RT.TITLE_EMAIL_EXEPTION,
             status_code=status_code,
-            descriptions=("email", RT.TEXT_EMAIL_NOT_FOUND)).generate_response()
+            descriptions=("email", RT.TEXT_EMAIL_NOT_FOUND),
+        ).generate_response()
 
-        raise HTTPException(status_code=status_code,detail=response)
+        raise HTTPException(status_code=status_code, detail=response)
     # password invalid
-    if not verify_password(password=user.password, hash_password=user_from_db.hash_password):
+    if not verify_password(
+        password=user.password, hash_password=user_from_db.hash_password
+    ):
         # generate error response
         status_code = status.HTTP_401_UNAUTHORIZED
         response = ResponseGenerator(
             title=RT.TITLE_PASSWORD_EXEPTION,
             status_code=status_code,
-            descriptions=("password", RT.TEXT_PASSWORD_INVALID)).generate_response()
-        
+            descriptions=("password", RT.TEXT_PASSWORD_INVALID),
+        ).generate_response()
+
         raise HTTPException(status_code=status_code, detail=response)
     return user_from_db
-    
+
+
 async def is_exists_user(user: UserAuth) -> User:
     """
     Check exists user in database
@@ -60,26 +73,37 @@ async def is_exists_user(user: UserAuth) -> User:
             user.email,
             title=RT.TITLE_EMAIL_EXEPTION,
             status_code=status_code,
-            descriptions=("email", RT.TEXT_EMAIL_IS_EXISTS)).generate_response()
-        
+            descriptions=("email", RT.TEXT_EMAIL_IS_EXISTS),
+        ).generate_response()
+
         raise HTTPException(status_code=status_code, detail=response)
     return user
+
 
 async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):
     """
     Accept token from request header and decode in payload(dict), which contains user_id, email and exp keys
     """
     try:
-        payload = jwt.decode(token=token, key=TokenSettings().TOKEN_KEY, algorithms=TokenSettings().TOKEN_ALGORITHM)
+        payload = jwt.decode(
+            token=token,
+            key=TokenSettings().TOKEN_KEY,
+            algorithms=TokenSettings().TOKEN_ALGORITHM,
+        )
         return payload
     except ExpiredSignatureError as e:
         status_code = status.HTTP_401_UNAUTHORIZED
-        response = ResponseGenerator(title=RT.TITLE_TOKEN_EXEPTION, 
-                                    status_code=status_code, 
-                                    descriptions=("token", RT.TEXT_TOKEN_EXPIRED)).generate_response()
+        response = ResponseGenerator(
+            title=RT.TITLE_TOKEN_EXEPTION,
+            status_code=status_code,
+            descriptions=("token", RT.TEXT_TOKEN_EXPIRED),
+        ).generate_response()
         raise HTTPException(status_code=status_code, detail=response)
 
-async def get_current_user(payload: Annotated[dict, Depends(get_token_payload)]) -> User:
+
+async def get_current_user(
+    payload: Annotated[dict, Depends(get_token_payload)]
+) -> User:
     """
     validate payload and return current user object from database
     """
@@ -87,4 +111,3 @@ async def get_current_user(payload: Annotated[dict, Depends(get_token_payload)])
     await verify_token_time(payload_schema.exp)
     user = await verify_token_email(payload_schema.email)
     return user
-

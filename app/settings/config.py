@@ -3,14 +3,13 @@ from pydantic import PostgresDsn
 
 
 class Settings(BaseSettings):
-    ...    
+    ...
 
 
 class DataBaseSettings(Settings):
-    model_config = SettingsConfigDict(env_file=".env",
-                                      env_file_encoding="utf-8",
-                                      case_sensitive=True, 
-                                      extra="allow")
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="allow"
+    )
 
     DB_LOGIN: str = "postgres"
     DB_PASSWORD: str = "postgres"
@@ -23,10 +22,9 @@ class DataBaseSettings(Settings):
 
 
 class TokenSettings(Settings):
-    model_config = SettingsConfigDict(env_file=".env",
-                                      env_file_encoding="utf-8",
-                                      case_sensitive=True,
-                                      extra="allow")
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="allow"
+    )
 
     TOKEN_ALGORITHM: str = "HS256"
     TOKEN_KEY: str = "1111"
