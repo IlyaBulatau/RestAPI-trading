@@ -1,8 +1,12 @@
 from app.utils.helpers import hashed_password
 from app.schemas.user import UserInfo
+from app.schemas.responses import PayloadResponse
 from app.database.models.user import User
+from app.servise.payload_links import links_to_get_users_process
 
 from typing import Dict, Any
+
+from datetime import datetime
 
 
 class UserSerializer:
@@ -27,8 +31,22 @@ class UserSerializer:
         """
         serialize database user model to schema UserInfo
         """
-        self.data: User
-        create_on = self.data.created_on.strftime("%A, %B %d, %Y %I:%M:%S")
-        return UserInfo(email=self.data.email, 
-                        username=self.data.username, 
+        user: User = self.data
+        create_on = self.serialize_datatime_field(user.created_on)
+        return UserInfo(email=user.email, 
+                        username=user.username, 
                         create_on=create_on,)
+    
+    def response_user_info_list(self) -> list[UserInfo]:
+        users: list[User] = self.data
+        serialize_users_list = [UserInfo(email=user.email,
+                                    username=user.username,
+                                    create_on=self.serialize_datatime_field(user.created_on),
+                                    payload=PayloadResponse(links=links_to_get_users_process(user.username)))\
+                            for user in users]
+        return serialize_users_list
+
+
+    def serialize_datatime_field(self, datetime_obj: datetime):
+        create_on = datetime_obj.strftime("%A, %B %d, %Y %I:%M:%S")
+        return create_on

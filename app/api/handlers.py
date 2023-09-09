@@ -3,7 +3,6 @@ from app.auth.actions import get_current_user
 from app.schemas.user import UserInfo
 from app.serializers.user import UserSerializer
 from app.database.db import Database
-from app.exeptions.http.responses import ResponseGenerator
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 
@@ -29,7 +28,8 @@ async def get_user_by_username(username: str):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Page Not Found")
 
-@router.get("/")
+@router.get("/",
+            response_model=dict[str, list[UserInfo]])
 async def get_all_users(limit: Annotated[int, Query(ge=1, 
                                                     le=10, 
                                                     description="number of results to be returned")] = 3,
@@ -37,6 +37,5 @@ async def get_all_users(limit: Annotated[int, Query(ge=1,
                                                     le=100000,
                                                     description="starting from number")] = 1):
     users = await Database().get_users_from_db(limit=limit, offset=offset-1)
-    for user in users:
-        print(user.username)
-    return {"Status": "OK"}
+    serialize_users = UserSerializer(users).response_user_info_list()
+    return {"Users": serialize_users}

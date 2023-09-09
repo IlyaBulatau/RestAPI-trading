@@ -37,7 +37,6 @@ class UserResponceBase(UserBase):
     """
     Base model for responce process user
     :email
-    :id
     :username
     """
     username: str = Field(alias="username", 

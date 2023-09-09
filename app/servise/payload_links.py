@@ -15,3 +15,14 @@ def links_to_auth_process() -> list[LinkResponse]:
         ),
     ]
     return links
+
+def links_to_get_users_process(username: str) -> list[LinkResponse]:
+    links = [
+        generate_link_info_for_response_model(
+            title="User operations",
+            route=f"/v1/api/users/{username}",
+            desc=f"Path to {username} profile"
+        )
+    ]
+
+    return links
