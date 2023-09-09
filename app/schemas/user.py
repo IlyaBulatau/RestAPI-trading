@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, validator, UUID4
+from pydantic import BaseModel, EmailStr, Field, validator, UUID4, ConfigDict
 
 from app.utils import validators as val
 from app.schemas.responses import PayloadResponse
@@ -45,7 +45,11 @@ class UserResponceBase(UserBase):
     """
 
     username: str = Field(
-        alias="username", title="Username", description="Username for responce"
+        alias="username", 
+        title="Username", 
+        description="Username for responce",
+        min_length=4,
+        max_length=20,
     )
 
 
@@ -115,3 +119,23 @@ class UserInfo(UserResponceBase):
 class UserList(BaseModel):
     users: list[UserInfo]
     payload: PayloadResponse = Field(default_factory=PayloadResponse)
+
+
+class UserUpdate(UserResponceBase):
+    model_config = ConfigDict(extra="forbid")
+
+    username: str | None = Field(
+            default=None,
+            min_length=4,
+            max_length=20
+    )
+    email: EmailStr | None = Field(
+        default=None
+    )
+
+    @validator("username")
+    def username_validate(cls, username: str) -> str:
+        val.username_validate(username)
+        return username
+
+

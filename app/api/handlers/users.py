@@ -1,6 +1,6 @@
 from app.database.models.user import User
 from app.auth.actions import get_current_user
-from app.schemas.user import UserInfo, UserList
+from app.schemas.user import UserInfo, UserList, UserUpdate
 from app.schemas.responses import PayloadResponse
 from app.serializers.user import UserSerializer
 from app.database.db import Database
@@ -13,7 +13,7 @@ from typing import Annotated
 
 
 router = APIRouter(
-    prefix=USER_ROUTE_URI, tags=["api"], dependencies=[Depends(get_current_user)]
+    prefix=USER_ROUTE_URI, tags=["users"], dependencies=[Depends(get_current_user)]
 )
 
 
@@ -61,3 +61,34 @@ async def get_all_users(
     return UserList(
         users=serialize_users, payload=PayloadResponse(links=link_user_response())
     )
+
+
+@router.put(path="/{username}/update",
+            status_code=200,
+            response_model=dict[str, str],
+            response_description="Update user data and return successfull message"            
+)
+async def update_user_data(
+    current_user: Annotated[User, Depends(get_current_user)], 
+    data: UserUpdate, 
+    username: Annotated[str, Path(pattern=r"^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$")]):
+    if username != current_user.username:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You can only change your account")
+    
+    if not any([data.username, data.email]):
+        return {"Message": "Data is empty"}
+    await Database().update_user(current_user, data)
+    # create hateos response
+    return {"Message": "Successfull update data"}
+
+
+@router.delete(path="/{username}/delete",
+               status_code=204,
+               description="Delete account by username")
+async def delete_user_by_username(
+    current_user: Annotated[User, Depends(get_current_user)],
+    username: Annotated[str, Path(pattern=r"^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$")]
+    ):
+    if current_user.username != username:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You can only delete your account")
+    await Database().delete_account(current_user)

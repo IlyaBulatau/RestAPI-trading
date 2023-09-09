@@ -2,10 +2,10 @@ from app.schemas.user import UserAuth
 from app.database.connect import get_session
 from app.database.models.user import User
 from app.serializers.user import UserSerializer
-from app.database.models.user import User
+from app.schemas.user import UserUpdate
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import UUID, select
+from sqlalchemy import UUID, select, delete
 
 
 class Database:
@@ -54,3 +54,20 @@ class Database:
             result = await session.execute(query)
             users = result.scalars().all()
         return users
+
+    async def update_user(self, user: User, data: UserUpdate) -> None:
+        """
+        Accept user - current user and data - json data from request according to UserUpdate schema
+        """
+        async with get_session() as session:
+            session: AsyncSession
+            if data.username:
+                user.username = data.username
+            if data.email:
+                user.email = data.email
+            session.add(user)
+
+    async def delete_account(self, user: User):
+        async with get_session() as session:
+            session: AsyncSession
+            await session.delete(user)
