@@ -10,9 +10,10 @@ from app.database.models.user import User
 from app.auth.actions import authenticate_user, is_exists_user
 from app.utils.helpers import generate_token
 from app.servise.payload_links import links_to_auth_process
+from app.settings.constance import AUTH_ROUTE_URI
 
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix=AUTH_ROUTE_URI, tags=["auth"])
 
 
 @router.post(

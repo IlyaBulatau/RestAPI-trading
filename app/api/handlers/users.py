@@ -1,8 +1,11 @@
 from app.database.models.user import User
 from app.auth.actions import get_current_user
-from app.schemas.user import UserInfo
+from app.schemas.user import UserInfo, UserList
+from app.schemas.responses import PayloadResponse
 from app.serializers.user import UserSerializer
 from app.database.db import Database
+from app.servise.payload_links import link_user_response
+from app.settings.constance import USER_ROUTE_URI
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Path
 
@@ -10,7 +13,7 @@ from typing import Annotated
 
 
 router = APIRouter(
-    prefix="/v1/api/users", tags=["api"], dependencies=[Depends(get_current_user)]
+    prefix=USER_ROUTE_URI, tags=["api"], dependencies=[Depends(get_current_user)]
 )
 
 
@@ -42,7 +45,7 @@ async def get_user_by_username(
 @router.get(
     path="/",
     status_code=200,
-    response_model=dict[str, list[UserInfo]],
+    response_model=UserList,
     response_description="Return list of users start from 'offset' in the number of 'limit'",
 )
 async def get_all_users(
@@ -55,4 +58,6 @@ async def get_all_users(
 ):
     users = await Database().get_users_from_db(limit=limit, offset=offset - 1)
     serialize_users = UserSerializer(users).response_user_info_list()
-    return {"Users": serialize_users}
+    return UserList(
+        users=serialize_users, payload=PayloadResponse(links=link_user_response())
+    )

@@ -22,6 +22,5 @@ setup_app(app)
 # TODO - add HATEOAS
 # TODO - write tests
 # TODO - create handler error
-# TODO - add black
 # TODO - add order_by for user_list response
 # TODO - write error handler in endpoints

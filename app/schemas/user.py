@@ -110,3 +110,8 @@ class UserInfo(UserResponceBase):
         description="Create time user registration",
     )
     payload: PayloadResponse = Field(default_factory=PayloadResponse)
+
+
+class UserList(BaseModel):
+    users: list[UserInfo]
+    payload: PayloadResponse = Field(default_factory=PayloadResponse)

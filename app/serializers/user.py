@@ -2,7 +2,7 @@ from app.utils.helpers import hashed_password
 from app.schemas.user import UserInfo
 from app.schemas.responses import PayloadResponse
 from app.database.models.user import User
-from app.servise.payload_links import links_to_get_users_process
+from app.servise.payload_links import link_user_response
 
 from typing import Dict, Any
 
@@ -37,6 +37,7 @@ class UserSerializer:
             email=user.email,
             username=user.username,
             create_on=create_on,
+            payload=PayloadResponse(links=link_user_response()),
         )
 
     def response_user_info_list(self) -> list[UserInfo]:
@@ -50,9 +51,7 @@ class UserSerializer:
                 email=user.email,
                 username=user.username,
                 create_on=self.serialize_datatime_field(user.created_on),
-                payload=PayloadResponse(
-                    links=links_to_get_users_process(user.username)
-                ),
+                payload=PayloadResponse(links=link_user_response(user.username)),
             )
             for user in users
         ]

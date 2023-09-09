@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.auth.handlers import router as auth_router
-from app.api.handlers import router as api_router
+from app.api.handlers.users import router as api_router
 
 
 def setup_router(app: FastAPI) -> None:
