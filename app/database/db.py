@@ -46,6 +46,10 @@ class Database:
         
 
     async def get_users_from_db(self, limit, offset):
+        """
+        Accept request params: limit - quantity result, offset - start from
+        Return all users[offset: offset+limit]
+        """
         query = select(User).offset(offset).limit(limit)
         async with get_session() as session:
             session: AsyncSession

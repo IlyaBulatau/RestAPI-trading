@@ -38,6 +38,10 @@ class UserSerializer:
                         create_on=create_on,)
     
     def response_user_info_list(self) -> list[UserInfo]:
+        """
+        serilize list with user models to list with UserInfo schemas 
+        and add payload to each object
+        """
         users: list[User] = self.data
         serialize_users_list = [UserInfo(email=user.email,
                                     username=user.username,
@@ -47,6 +51,9 @@ class UserSerializer:
         return serialize_users_list
 
 
-    def serialize_datatime_field(self, datetime_obj: datetime):
+    def serialize_datatime_field(self, datetime_obj: datetime) -> str:
+        """
+        transform datetime to string
+        """
         create_on = datetime_obj.strftime("%A, %B %d, %Y %I:%M:%S")
         return create_on
