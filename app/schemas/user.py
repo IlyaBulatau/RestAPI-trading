@@ -1,5 +1,7 @@
 from pydantic import BaseModel, EmailStr, Field, validator, UUID4
+
 from app.utils import validators as val
+from app.schemas.responses import PayloadResponse
 
 from datetime import datetime
 import uuid
@@ -41,7 +43,7 @@ class UserResponceBase(UserBase):
     username: str = Field(alias="username", 
                           title="Username", 
                           description="Username for responce")
-    
+
 
 class UserAuth(UserAuthBase):
     """
@@ -82,6 +84,7 @@ class UserResponce(UserResponceBase):
     :id
     """
     id: UUID4 = Field(default_factory=uuid.uuid4)
+    payload: PayloadResponse = Field(default_factory=PayloadResponse)
 
 
 class UserInfo(UserResponceBase):
@@ -94,3 +97,4 @@ class UserInfo(UserResponceBase):
     create_on: datetime | str = Field(alias="create_on",
                                       title="create time",
                                       description="Create time user registration")
+    payload: PayloadResponse = Field(default_factory=PayloadResponse)

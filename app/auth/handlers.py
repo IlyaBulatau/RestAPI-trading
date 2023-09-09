@@ -3,11 +3,13 @@ from fastapi import APIRouter, Depends
 from typing import Annotated
 
 from app.schemas.user import UserAuth, UserResponce
+from app.schemas.responses import PayloadResponse, LinkResponse
 from app.schemas.token import Token, Payload
 from app.database import db
 from app.database.models.user import User
 from app.auth.actions import authenticate_user, is_exists_user
 from app.utils.helpers import generate_token
+from app.servise.payload_links import links_to_auth_process
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -17,13 +19,19 @@ router = APIRouter(prefix="/auth", tags=["auth"])
             response_model=UserResponce, 
             status_code=201, 
             response_description="Responce userID, username and email")
-async def signup_process(user: Annotated[UserAuth, Depends(is_exists_user)]):
+async def signup_process(user: Annotated[UserAuth, 
+                                         Depends(is_exists_user)],
+                        links: Annotated[list[LinkResponse], Depends(links_to_auth_process)]):
     """
     Handles registration process
+    :user - user model form Database
+    :links - list links(LinkResponse objects) for payload generated 
     """ 
     user_id = await db.Database().create_user_in_db(user)
-    return UserResponce(username=user.username, email=user.email, id=user_id)
-
+    return UserResponce(username=user.username, 
+                        email=user.email, 
+                        id=user_id, 
+                        payload=PayloadResponse(links=links))
 @router.post(path="/signin",  
             status_code=200,
             response_model=Token,

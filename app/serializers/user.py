@@ -3,7 +3,6 @@ from app.schemas.user import UserInfo
 from app.database.models.user import User
 
 from typing import Dict, Any
-from datetime import datetime
 
 
 class UserSerializer:
@@ -32,4 +31,4 @@ class UserSerializer:
         create_on = self.data.created_on.strftime("%A, %B %d, %Y %I:%M:%S")
         return UserInfo(email=self.data.email, 
                         username=self.data.username, 
-                        create_on=create_on)
+                        create_on=create_on,)
