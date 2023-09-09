@@ -13,4 +13,5 @@ setup_app(app)
 # TODO - add HATEOAS
 # TODO - write tests
 # TODO - create handler error
+# TODO - add black
 

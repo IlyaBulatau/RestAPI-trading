@@ -33,5 +33,22 @@ class Database:
             user = result.scalars().first()
         return user
 
+    async def get_user_by_username(self, username) -> User:
+        """
+        Accept username from request, and look up user in the database
+        """
+        query = select(User).where(User.username == username)
+        async with get_session() as session:
+            session: AsyncSession
+            result = await session.execute(query)
+            user = result.scalars().first()
+        return user
         
 
+    async def get_users_from_db(self, limit, offset):
+        query = select(User).offset(offset).limit(limit)
+        async with get_session() as session:
+            session: AsyncSession
+            result = await session.execute(query)
+            users = result.scalars().all()
+        return users
