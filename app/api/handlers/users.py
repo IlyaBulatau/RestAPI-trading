@@ -3,6 +3,7 @@ from app.auth.actions import get_current_user
 from app.schemas.user import UserResponseInfo, UserList, UserUpdate
 from app.database.db import Database
 from app.settings.constance import USER_ROUTE_URI
+from app.servise.dependens import GET_CURRENT_USER
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Path
 
@@ -20,7 +21,7 @@ router = APIRouter(
     status_code=200,
     response_description="Return user info by bearer token",
 )
-async def get_me_info(current_user: Annotated[User, Depends(get_current_user)]):
+async def get_me_info(current_user: GET_CURRENT_USER):
     return UserResponseInfo(
         email=current_user.email,
         username=current_user.username,
@@ -82,7 +83,7 @@ async def get_all_users(
     response_description="Update user data and return successfull message",
 )
 async def update_user_data(
-    current_user: Annotated[User, Depends(get_current_user)],
+    current_user: GET_CURRENT_USER,
     data: UserUpdate,
     username: Annotated[str, Path(pattern=r"^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$")],
 ):
