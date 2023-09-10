@@ -66,8 +66,9 @@ async def is_exists_user(user: UserAuth) -> bool:
     Check exists user in database
     if user in database - raise exeption else return user to create new
     """
-    user_from_db = await Database().get_user_by_email(user.email)
-    if user_from_db:
+    user_from_db_by_email = await Database().get_user_by_email(user.email)
+    user_from_db_by_username = await Database().get_user_by_username(user.username)
+    if any([user_from_db_by_email, user_from_db_by_username]):
         return True
     return False
 

@@ -44,15 +44,15 @@ def generate_token(payload: Payload, exp: datetime = None) -> str:
     return token
 
 
-def generate_link_info_for_response_model(
-    title: str, route: str, desc: str
-) -> LinkResponse:
-    """
-    Generate LinkResponse schema
-    :title - name link, example SignIn, Create Product, User Info
-    :route - way to endpoint, example /signin, /v1/api/me
-    :desc - descriptions of what an endpoint is needed for
-    """
-    return LinkResponse(
-        title=title, detail=LinkDetailResponse(route=route, description=desc)
-    )
+# def generate_link_info_for_response_model(
+#     title: str, route: str, desc: str
+# ) -> LinkResponse:
+#     """
+#     Generate LinkResponse schema
+#     :title - name link, example SignIn, Create Product, User Info
+#     :route - way to endpoint, example /signin, /v1/api/me
+#     :desc - descriptions of what an endpoint is needed for
+#     """
+#     return LinkResponse(
+#         title=title, detail=LinkDetailResponse(route=route, description=desc)
+#     )

@@ -20,22 +20,21 @@ router = APIRouter(prefix=AUTH_ROUTE_URI, tags=["auth"])
     status_code=201,
     response_description="Responce userID, username and email",
 )
-async def signup_process(
-    user: UserAuth
-):
+async def signup_process(user: UserAuth):
     """
     Handles registration process
     :user - user model form Database
     :links - list links(LinkResponse objects) for payload generated
     """
-    if is_exists_user(user):
+    if await is_exists_user(user):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="with the email user is exist"
+            detail="with the email or username user is exist",
         )
     new_user: User = await db.Database().create_user_in_db(user)
+    user_with_id = await db.Database().get_user_by_email(new_user.email)
     return UserAuthResponse(
-        id=new_user.id,
+        id=user_with_id.id,
         email=new_user.email,
         username=new_user.username,
     )

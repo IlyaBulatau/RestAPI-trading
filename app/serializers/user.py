@@ -1,7 +1,4 @@
 from app.utils.helpers import hashed_password
-from app.schemas.responses import PayloadResponse
-from app.database.models.user import User
-from app.servise.payload_links import link_user_response
 
 from typing import Dict, Any
 
@@ -25,7 +22,6 @@ class UserSerializer:
         data.update({"hash_password": hash_password})
 
         return data
-
 
     def serialize_datatime_field(self, datetime_obj: datetime) -> str:
         """
