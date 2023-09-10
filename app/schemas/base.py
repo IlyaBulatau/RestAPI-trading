@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, validator
 from app.utils import validators as val
+from app.settings import constance as c
 
 
 class UserBase(BaseModel):
@@ -12,7 +13,9 @@ class UserBase(BaseModel):
 
 
 class Username(BaseModel):
-    username: str = Field(min_length=4, max_length=20)
+    username: str = Field(
+        min_length=c.MIN_USERNAME_LENGHT, max_length=c.MAX_USERNAME_LENGHT
+    )
 
     @validator("username")
     def username_validate(cls, username: str) -> str:
@@ -21,7 +24,9 @@ class Username(BaseModel):
 
 
 class Password(BaseModel):
-    password: str = Field(min_length=8, max_length=90)
+    password: str = Field(
+        min_length=c.MIN_PASSWORD_LENGHT, max_length=c.MAX_PASSWORD_LENGHT
+    )
 
     @validator("password")
     def password_validate(cls, password: str) -> str:

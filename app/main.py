@@ -26,3 +26,4 @@ setup_app(app)
 # TODO - write error handler in endpoints
 # TODO - remove code duplication
 # TODO - create file with dependenses
+# TODO - render geting session in dependensie
