@@ -61,23 +61,15 @@ async def authenticate_user(user: UserLogin) -> User:
     return user_from_db
 
 
-async def is_exists_user(user: UserAuth) -> User:
+async def is_exists_user(user: UserAuth) -> bool:
     """
     Check exists user in database
     if user in database - raise exeption else return user to create new
     """
     user_from_db = await Database().get_user_by_email(user.email)
     if user_from_db:
-        status_code = status.HTTP_401_UNAUTHORIZED
-        response = ResponseGenerator(
-            user.email,
-            title=RT.TITLE_EMAIL_EXEPTION,
-            status_code=status_code,
-            descriptions=("email", RT.TEXT_EMAIL_IS_EXISTS),
-        ).generate_response()
-
-        raise HTTPException(status_code=status_code, detail=response)
-    return user
+        return True
+    return False
 
 
 async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):

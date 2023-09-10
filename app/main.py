@@ -24,3 +24,5 @@ setup_app(app)
 # TODO - create handler error
 # TODO - add order_by for user_list response
 # TODO - write error handler in endpoints
+# TODO - remove code duplication
+# TODO - create file with dependenses

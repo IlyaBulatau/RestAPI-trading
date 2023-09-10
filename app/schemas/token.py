@@ -8,7 +8,6 @@ from datetime import datetime
 class Token(BaseModel):
     token: str
     type: str = "Bearer"
-    payload: PayloadResponse = Field(default_factory=PayloadResponse)
 
 
 class Payload(BaseModel):

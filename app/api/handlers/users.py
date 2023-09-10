@@ -1,10 +1,7 @@
 from app.database.models.user import User
 from app.auth.actions import get_current_user
-from app.schemas.user import UserInfo, UserList, UserUpdate
-from app.schemas.responses import PayloadResponse
-from app.serializers.user import UserSerializer
+from app.schemas.user import UserResponseInfo, UserList, UserUpdate
 from app.database.db import Database
-from app.servise.payload_links import link_user_response
 from app.settings.constance import USER_ROUTE_URI
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Path
@@ -19,27 +16,35 @@ router = APIRouter(
 
 @router.get(
     path="/me",
-    response_model=UserInfo,
+    response_model=UserResponseInfo,
     status_code=200,
     response_description="Return user info by bearer token",
 )
 async def get_me_info(current_user: Annotated[User, Depends(get_current_user)]):
-    return UserSerializer(current_user).responce_user_info()
+    return UserResponseInfo(
+        email=current_user.email,
+        username=current_user.username,
+        create_on=current_user.created_on
+    )
 
 
 @router.get(
     path="/{username}",
     status_code=200,
-    response_model=UserInfo,
+    response_model=UserResponseInfo,
     response_description="Return user info by path param username",
 )
 async def get_user_by_username(
     username: Annotated[str, Path(pattern=r"^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$")]
 ):
     user = await Database().get_user_by_username(username=username)
-    if user:
-        return UserSerializer(user).responce_user_info()
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Page Not Found")
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Page Not Found")
+    return   UserResponseInfo(
+        email=user.email,
+        username=user.username,
+        create_on=user.created_on
+    )
 
 
 @router.get(
@@ -56,10 +61,15 @@ async def get_all_users(
         int, Query(ge=1, le=100000, description="starting from number")
     ] = 1,
 ):
-    users = await Database().get_users_from_db(limit=limit, offset=offset - 1)
-    serialize_users = UserSerializer(users).response_user_info_list()
+    users: list[User] = await Database().get_users_from_db(limit=limit, offset=offset - 1)
+
     return UserList(
-        users=serialize_users, payload=PayloadResponse(links=link_user_response())
+        users=[UserResponseInfo(
+            email=user.email, 
+            username=user.username, 
+            create_on=user.created_on) 
+            for user in users
+            ]
     )
 
 

@@ -1,15 +1,13 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from typing import Annotated
 
-from app.schemas.user import UserAuth, UserResponce
-from app.schemas.responses import PayloadResponse, LinkResponse
+from app.schemas.user import UserAuthResponse, UserAuth
 from app.schemas.token import Token, Payload
 from app.database import db
 from app.database.models.user import User
 from app.auth.actions import authenticate_user, is_exists_user
 from app.utils.helpers import generate_token
-from app.servise.payload_links import links_to_auth_process
 from app.settings.constance import AUTH_ROUTE_URI
 
 
@@ -18,25 +16,28 @@ router = APIRouter(prefix=AUTH_ROUTE_URI, tags=["auth"])
 
 @router.post(
     path="/signup",
-    response_model=UserResponce,
+    response_model=UserAuthResponse,
     status_code=201,
     response_description="Responce userID, username and email",
 )
 async def signup_process(
-    user: Annotated[UserAuth, Depends(is_exists_user)],
-    links: Annotated[list[LinkResponse], Depends(links_to_auth_process)],
+    user: UserAuth
 ):
     """
     Handles registration process
     :user - user model form Database
     :links - list links(LinkResponse objects) for payload generated
     """
-    user_id = await db.Database().create_user_in_db(user)
-    return UserResponce(
-        username=user.username,
-        email=user.email,
-        id=user_id,
-        payload=PayloadResponse(links=links),
+    if is_exists_user(user):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="with the email user is exist"
+        )
+    new_user: User = await db.Database().create_user_in_db(user)
+    return UserAuthResponse(
+        id=new_user.id,
+        email=new_user.email,
+        username=new_user.username,
     )
 
 
