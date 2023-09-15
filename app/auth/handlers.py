@@ -23,8 +23,7 @@ router = APIRouter(prefix=AUTH_ROUTE_URI, tags=["auth"])
 async def signup_process(user: UserAuth):
     """
     Handles registration process
-    :user - user model form Database
-    :links - list links(LinkResponse objects) for payload generated
+    :user - user schemas
     """
     if await is_exists_user(user):
         raise HTTPException(
@@ -48,6 +47,7 @@ async def signup_process(user: UserAuth):
 )
 async def signin_process(user: Annotated[User, Depends(authenticate_user)]):
     """
+    Checks if user is in database and
     Handles getting token process
     """
     token = generate_token(payload=Payload(user_id=str(user.id), email=user.email))

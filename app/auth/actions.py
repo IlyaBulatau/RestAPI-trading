@@ -9,8 +9,6 @@ from app.auth.verify_token import (
     verify_token_email,
     verify_token_time,
 )
-from app.exeptions.http.responses import ResponseGenerator
-from app.exeptions.http import response_text as RT
 
 from typing import Annotated
 
@@ -31,6 +29,9 @@ oauth_schema = OAuth2PasswordBearer(
 async def authenticate_user(user: UserLogin) -> User:
     """
     The func conducts the authentication process
+    user: Pydantic model
+    Search for user accourding data, and if user is found returns it,
+    else raise Error
     """
     user_from_db = await Database().get_user_by_email(user.email)
     # if user not found in database
@@ -62,7 +63,8 @@ async def is_exists_user(user: UserAuth) -> bool:
 
 async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):
     """
-    Accept token from request header and decode in payload(dict), which contains user_id, email and exp keys
+    Accept token from request header and decode in payload(dict),
+    which contains user_id, email and exp keys
     """
     try:
         payload = jwt.decode(
@@ -72,20 +74,18 @@ async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):
         )
         return payload
     except ExpiredSignatureError as e:
-        status_code = status.HTTP_401_UNAUTHORIZED
-        response = ResponseGenerator(
-            title=RT.TITLE_TOKEN_EXEPTION,
-            status_code=status_code,
-            descriptions=("token", RT.TEXT_TOKEN_EXPIRED),
-        ).generate_response()
-        raise HTTPException(status_code=status_code, detail=response)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="This is token expired"
+        )
 
 
 async def get_current_user(
     payload: Annotated[dict, Depends(get_token_payload)]
 ) -> User:
     """
-    validate payload and return current user object from database
+    Accept token
+    validate payload from token and
+    return current user object from database
     """
     payload_schema = await verify_payload_from_token(payload)
     await verify_token_time(payload_schema.exp)

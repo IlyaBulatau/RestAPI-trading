@@ -1,6 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
 
-from app.schemas.responses import PayloadResponse
 
 from datetime import datetime
 
