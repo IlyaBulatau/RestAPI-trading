@@ -8,10 +8,8 @@ from sqlalchemy import UUID, select, delete
 
 
 class Database:
-
     def __init__(self, session: AsyncSession):
         self.session: AsyncSession = session
-
 
     async def create_user_in_db(self, user: UserAuth) -> UUID:
         """
@@ -60,7 +58,6 @@ class Database:
         if data.email:
             user.email = data.email
         self.session.add(user)
-
 
     async def delete_account(self, user: User):
         await self.session.delete(user)

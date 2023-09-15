@@ -61,7 +61,7 @@ async def is_exists_user(user: UserAuth) -> bool:
         database = Database(session)
         user_from_db_by_email = await database.get_user_by_email(user.email)
         user_from_db_by_username = await database.get_user_by_username(user.username)
-    
+
     if any([user_from_db_by_email, user_from_db_by_username]):
         return True
     return False

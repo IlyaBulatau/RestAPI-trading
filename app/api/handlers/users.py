@@ -41,7 +41,7 @@ async def get_user_by_username(username: VALIDATE_USERNAME_REGULAR):
     async with get_session() as session:
         database = Database(session)
         user = await database.get_user_by_username(username=username)
-    
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Page Not Found"
@@ -68,8 +68,8 @@ async def get_all_users(
     async with get_session() as session:
         database = Database(session)
         users: list[User] = await database.get_users_from_db(
-        limit=limit, offset=offset - 1
-    )
+            limit=limit, offset=offset - 1
+        )
 
     return UserList(
         users=[
@@ -101,11 +101,11 @@ async def update_user_data(
     # if data is empty
     if not any([data.username, data.email]):
         return {"Message": "Data is empty"}
-    
+
     async with get_session() as session:
         database = Database(session)
         await database.update_user(current_user, data)
-    
+
     return {"Message": "Successfull update data"}
 
 

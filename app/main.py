@@ -26,5 +26,4 @@ setup_app(app)
 # TODO - write error handler in endpoints
 # TODO - remove code duplication
 # TODO - create file with dependenses
-# TODO - render geting session in dependensie
-# TODO - render crud operation in crud.py
+# TODO - create wallets and ability buy products
