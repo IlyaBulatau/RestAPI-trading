@@ -1,11 +1,10 @@
 from app.schemas.user import UserAuth, UserUpdate
-from app.database.connect import get_session
 from app.database.models.user import User
 from app.database.models.product import Product
 from app.serializers.user import UserSerializer
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import UUID, select, delete
+from sqlalchemy import UUID, select
 
 
 class Database:

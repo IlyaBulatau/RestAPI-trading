@@ -1,5 +1,4 @@
 from sqlalchemy import orm
-from sqlalchemy.sql.functions import func
 import sqlalchemy as db
 
 from app.database.models.base import Base

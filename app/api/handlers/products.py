@@ -26,8 +26,12 @@ router = APIRouter(
     response_description="Return all products",
 )
 async def get_all_products(
-    limit: Annotated[int, Query(ge=1, le=100)] = 10,
-    offset: Annotated[int, Query(ge=1, le=100000)] = 1,
+    limit: Annotated[
+        int, Query(ge=1, le=100, description="number of results to be returned")
+    ] = 10,
+    offset: Annotated[
+        int, Query(ge=1, le=100000, description="starting from number")
+    ] = 1,
 ):
     async with get_session() as session:
         database = Database(session)
@@ -36,7 +40,9 @@ async def get_all_products(
         )
         response_list: list[ProductSchema] = []
         for product in products:
+            # get the product owner
             owner: User = await database.get_user_by_id(product.user_id)
+            # generate schema
             response_list.append(
                 ProductSchema(
                     id=product.id,

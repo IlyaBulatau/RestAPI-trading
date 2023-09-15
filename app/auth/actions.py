@@ -1,5 +1,4 @@
 from app.schemas.user import UserLogin, UserAuth
-from app.database.db import Database
 from app.utils.helpers import verify_password
 from app.database.models.user import User
 from app.database.db import Database

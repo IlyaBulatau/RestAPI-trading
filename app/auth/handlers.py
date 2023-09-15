@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 
 from typing import Annotated
 
@@ -7,7 +7,7 @@ from app.schemas.token import Token, Payload
 from app.database import db
 from app.database.connect import get_session
 from app.database.models.user import User
-from app.auth.actions import authenticate_user, is_exists_user
+from app.auth.actions import authenticate_user
 from app.utils.helpers import generate_token
 from app.settings.constance import AUTH_ROUTE_URI
 

@@ -16,8 +16,6 @@ app = FastAPI(
 
 setup_app(app)
 
-# TODO - create product models in database
-# TODO - create product schemes
 # TODO - create caching requests
 # TODO - add HATEOAS
 # TODO - write tests
@@ -25,5 +23,4 @@ setup_app(app)
 # TODO - add order_by for user_list response
 # TODO - write error handler in endpoints
 # TODO - remove code duplication
-# TODO - create file with dependenses
 # TODO - create wallets and ability buy products

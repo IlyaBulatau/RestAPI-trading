@@ -1,10 +1,8 @@
 import sqlalchemy as db
-from sqlalchemy.sql.functions import func
 from sqlalchemy import orm
 
 from uuid import uuid4
 
-from app.database.models.product import Product
 from app.database.models.base import Base
 
 
