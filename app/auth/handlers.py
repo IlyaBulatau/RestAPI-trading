@@ -5,6 +5,7 @@ from typing import Annotated
 from app.schemas.user import UserAuthResponse, UserAuth
 from app.schemas.token import Token, Payload
 from app.database import db
+from app.database.connect import get_session
 from app.database.models.user import User
 from app.auth.actions import authenticate_user, is_exists_user
 from app.utils.helpers import generate_token
@@ -25,13 +26,12 @@ async def signup_process(user: UserAuth):
     Handles registration process
     :user - user schemas
     """
-    if await is_exists_user(user):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="with the email or username user is exist",
-        )
-    new_user: User = await db.Database().create_user_in_db(user)
-    user_with_id = await db.Database().get_user_by_email(new_user.email)
+    async with get_session() as session:
+        database = db.Database(session)
+
+        new_user: User = await database.create_user_in_db(user)
+        user_with_id = await database.get_user_by_email(new_user.email)
+
     return UserAuthResponse(
         id=user_with_id.id,
         email=new_user.email,

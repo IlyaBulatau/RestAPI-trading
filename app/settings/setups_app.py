@@ -1,12 +1,14 @@
 from fastapi import FastAPI
 
 from app.auth.handlers import router as auth_router
-from app.api.handlers.users import router as api_router
+from app.api.handlers.users import router as user_router
+from app.api.handlers.products import router as product_router
 
 
 def setup_router(app: FastAPI) -> None:
     app.include_router(auth_router)
-    app.include_router(api_router)
+    app.include_router(user_router)
+    app.include_router(product_router)
 
 
 def setup_app(app: FastAPI) -> None:

@@ -1,6 +1,7 @@
 from app.schemas.user import UserAuth, UserUpdate
 from app.database.connect import get_session
 from app.database.models.user import User
+from app.database.models.product import Product
 from app.serializers.user import UserSerializer
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,6 +11,12 @@ from sqlalchemy import UUID, select, delete
 class Database:
     def __init__(self, session: AsyncSession):
         self.session: AsyncSession = session
+
+    async def get_user_by_id(self, id: UUID) -> User:
+        query = select(User).where(User.id == id)
+        result = await self.session.execute(query)
+        user = result.scalars().first()
+        return user
 
     async def create_user_in_db(self, user: UserAuth) -> UUID:
         """
@@ -61,3 +68,9 @@ class Database:
 
     async def delete_account(self, user: User):
         await self.session.delete(user)
+
+    async def get_products(self, limit, offset) -> list[Product]:
+        query = select(Product).offset(offset).limit(limit)
+        result = await self.session.execute(query)
+        products = result.scalars().all()
+        return products

@@ -32,3 +32,14 @@ class Password(BaseModel):
     def password_validate(cls, password: str) -> str:
         val.password_validate(password)
         return password
+
+
+class PayloadBase(BaseModel):
+    ...
+
+
+class ProductBase(BaseModel):
+    model_config = ConfigDict(
+        from_attributes=True,
+        extra="forbid",
+    )
