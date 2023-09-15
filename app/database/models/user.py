@@ -3,8 +3,8 @@ from sqlalchemy.sql.functions import func
 from sqlalchemy import orm
 
 from uuid import uuid4
-from datetime import datetime
 
+from app.database.models.product import Product
 from app.database.models.base import Base
 
 
@@ -23,9 +23,4 @@ class User(Base):
     hash_password: orm.Mapped[str] = orm.mapped_column(
         db.String(length=90), nullable=False
     )
-    created_on: orm.Mapped[datetime] = orm.mapped_column(
-        db.DateTime(), server_default=func.now()
-    )
-    update_on: orm.Mapped[datetime] = orm.mapped_column(
-        db.DateTime(), server_default=func.now(), onupdate=func.now()
-    )
+    products = orm.relationship("Product", back_populates="user")
