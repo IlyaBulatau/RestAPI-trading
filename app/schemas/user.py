@@ -1,7 +1,6 @@
 from pydantic import BaseModel, UUID4, Field, validator, EmailStr
 
 from app.utils import validators as val
-from app.schemas.responses import PayloadResponse
 from app.schemas.base import UserBase, Username, Password
 
 from datetime import datetime

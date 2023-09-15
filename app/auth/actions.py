@@ -4,6 +4,7 @@ from app.utils.helpers import verify_password
 from app.database.models.user import User
 from app.database.db import Database
 from app.settings.config import TokenSettings
+from app.database.connect import get_session
 from app.auth.verify_token import (
     verify_payload_from_token,
     verify_token_email,
@@ -33,7 +34,9 @@ async def authenticate_user(user: UserLogin) -> User:
     Search for user accourding data, and if user is found returns it,
     else raise Error
     """
-    user_from_db = await Database().get_user_by_email(user.email)
+    async with get_session() as session:
+        database = Database(session)
+        user_from_db = await database.get_user_by_email(user.email)
     # if user not found in database
     if not user_from_db:
         raise HTTPException(
@@ -54,8 +57,11 @@ async def is_exists_user(user: UserAuth) -> bool:
     Check exists user in database
     if user in database - raise exeption else return user to create new
     """
-    user_from_db_by_email = await Database().get_user_by_email(user.email)
-    user_from_db_by_username = await Database().get_user_by_username(user.username)
+    async with get_session() as session:
+        database = Database(session)
+        user_from_db_by_email = await database.get_user_by_email(user.email)
+        user_from_db_by_username = await database.get_user_by_username(user.username)
+    
     if any([user_from_db_by_email, user_from_db_by_username]):
         return True
     return False

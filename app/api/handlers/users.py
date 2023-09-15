@@ -2,10 +2,11 @@ from app.database.models.user import User
 from app.auth.actions import get_current_user
 from app.schemas.user import UserResponseInfo, UserList, UserUpdate
 from app.database.db import Database
+from app.database.connect import get_session
 from app.settings.constance import USER_ROUTE_URI
 from app.servise.dependens import GET_CURRENT_USER, VALIDATE_USERNAME_REGULAR
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query, Path
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 
 from typing import Annotated
 
@@ -36,7 +37,11 @@ async def get_me_info(current_user: GET_CURRENT_USER):
     response_description="Return user info by path param username",
 )
 async def get_user_by_username(username: VALIDATE_USERNAME_REGULAR):
-    user = await Database().get_user_by_username(username=username)
+    # try get user
+    async with get_session() as session:
+        database = Database(session)
+        user = await database.get_user_by_username(username=username)
+    
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Page Not Found"
@@ -60,7 +65,9 @@ async def get_all_users(
         int, Query(ge=1, le=100000, description="starting from number")
     ] = 1,
 ):
-    users: list[User] = await Database().get_users_from_db(
+    async with get_session() as session:
+        database = Database(session)
+        users: list[User] = await database.get_users_from_db(
         limit=limit, offset=offset - 1
     )
 
@@ -85,16 +92,20 @@ async def update_user_data(
     data: UserUpdate,
     username: VALIDATE_USERNAME_REGULAR,
 ):
+    # if the user doesn't current
     if username != current_user.username:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only change your account",
         )
-
+    # if data is empty
     if not any([data.username, data.email]):
         return {"Message": "Data is empty"}
-    await Database().update_user(current_user, data)
-    # create hateos response
+    
+    async with get_session() as session:
+        database = Database(session)
+        await database.update_user(current_user, data)
+    
     return {"Message": "Successfull update data"}
 
 
@@ -110,4 +121,6 @@ async def delete_user_by_username(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only delete your account",
         )
-    await Database().delete_account(current_user)
+    async with get_session() as session:
+        database = Database(session)
+        await database.delete_account(current_user)

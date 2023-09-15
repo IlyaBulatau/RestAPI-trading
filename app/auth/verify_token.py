@@ -3,6 +3,7 @@ from datetime import datetime
 from app.schemas.token import Payload
 from app.database.models.user import User
 from app.database.db import Database
+from app.database.connect import get_session
 
 from fastapi import status
 from fastapi.exceptions import HTTPException
@@ -23,7 +24,9 @@ async def verify_token_email(email: str) -> User:
     Check if there is an email in the database
     return user
     """
-    user = await Database().get_user_by_email(email)
+    async with get_session() as session:
+        database = Database(session)
+        user = await database.get_user_by_email(email)
     if user:
         return user
     raise HTTPException(
