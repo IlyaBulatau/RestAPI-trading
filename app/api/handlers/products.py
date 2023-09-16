@@ -6,7 +6,7 @@ from app.settings.constance import PRODUCT_ROUTER_API
 from app.auth.actions import get_current_user
 from app.schemas.product import Product as ProductSchema, ProductList
 from app.database.connect import get_session
-from app.database.db import Database
+from app.database.managers import ProductManager
 from app.database.models.user import User
 from app.database.models.product import Product
 from app.schemas.user import UserResponseInfo
@@ -34,7 +34,7 @@ async def get_all_products(
     ] = 1,
 ):
     async with get_session() as session:
-        database = Database(session)
+        database = ProductManager(session)
         products: list[Product] = await database.get_products(
             limit=limit, offset=offset - 1
         )

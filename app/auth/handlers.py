@@ -4,7 +4,7 @@ from typing import Annotated
 
 from app.schemas.user import UserAuthResponse, UserAuth
 from app.schemas.token import Token, Payload
-from app.database import db
+from app.database.managers import UserManager
 from app.database.connect import get_session
 from app.database.models.user import User
 from app.auth.actions import authenticate_user
@@ -27,10 +27,10 @@ async def signup_process(user: UserAuth):
     :user - user schemas
     """
     async with get_session() as session:
-        database = db.Database(session)
+        database = UserManager(session)
 
         new_user: User = await database.create_user_in_db(user)
-        user_with_id = await database.get_user_by_email(new_user.email)
+        user_with_id: User = await database.get_user_by_email(new_user.email)
 
     return UserAuthResponse(
         id=user_with_id.id,

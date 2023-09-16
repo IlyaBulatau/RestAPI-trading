@@ -1,7 +1,7 @@
 from app.database.models.user import User
 from app.auth.actions import get_current_user
 from app.schemas.user import UserResponseInfo, UserList, UserUpdate
-from app.database.db import Database
+from app.database.managers import UserManager
 from app.database.connect import get_session
 from app.settings.constance import USER_ROUTE_URI
 from app.servise.dependens import GET_CURRENT_USER, VALIDATE_USERNAME_REGULAR
@@ -39,8 +39,8 @@ async def get_me_info(current_user: GET_CURRENT_USER):
 async def get_user_by_username(username: VALIDATE_USERNAME_REGULAR):
     # try get user
     async with get_session() as session:
-        database = Database(session)
-        user = await database.get_user_by_username(username=username)
+        database = UserManager(session)
+        user: User = await database.get_user_by_username(username=username)
 
     if not user:
         raise HTTPException(
@@ -66,7 +66,7 @@ async def get_all_users(
     ] = 1,
 ):
     async with get_session() as session:
-        database = Database(session)
+        database = UserManager(session)
         users: list[User] = await database.get_users_from_db(
             limit=limit, offset=offset - 1
         )
@@ -91,7 +91,7 @@ async def update_user_data(
     current_user: GET_CURRENT_USER,
     data: UserUpdate,
     username: VALIDATE_USERNAME_REGULAR,
-):
+) -> dict:
     # if the user doesn't current
     if username != current_user.username:
         raise HTTPException(
@@ -103,7 +103,7 @@ async def update_user_data(
         return {"Message": "Data is empty"}
 
     async with get_session() as session:
-        database = Database(session)
+        database = UserManager(session)
         await database.update_user(current_user, data)
 
     return {"Message": "Successfull update data"}
@@ -115,12 +115,12 @@ async def update_user_data(
 async def delete_user_by_username(
     current_user: Annotated[User, Depends(get_current_user)],
     username: VALIDATE_USERNAME_REGULAR,
-):
+) -> None:
     if current_user.username != username:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You can only delete your account",
         )
     async with get_session() as session:
-        database = Database(session)
+        database = UserManager(session)
         await database.delete_account(current_user)

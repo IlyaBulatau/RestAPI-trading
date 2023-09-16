@@ -1,7 +1,8 @@
 from app.schemas.user import UserLogin, UserAuth
+from app.schemas.token import Payload
 from app.utils.helpers import verify_password
 from app.database.models.user import User
-from app.database.db import Database
+from app.database.managers import UserManager
 from app.settings.config import TokenSettings
 from app.database.connect import get_session
 from app.auth.verify_token import (
@@ -34,8 +35,8 @@ async def authenticate_user(user: UserLogin) -> User:
     else raise Error
     """
     async with get_session() as session:
-        database = Database(session)
-        user_from_db = await database.get_user_by_email(user.email)
+        database = UserManager(session)
+        user_from_db: User = await database.get_user_by_email(user.email)
     # if user not found in database
     if not user_from_db:
         raise HTTPException(
@@ -57,10 +58,10 @@ async def is_exists_user(user: UserAuth) -> bool:
     if user in database - raise exeption else return user to create new
     """
     async with get_session() as session:
-        database = Database(session)
-        user_from_db_by_email = await database.get_user_by_email(user.email)
-        user_from_db_by_username = await database.get_user_by_username(user.username)
-
+        database = UserManager(session)
+        user_from_db_by_email: User = await database.get_user_by_email(user.email)
+        user_from_db_by_username: User = await database.get_user_by_username(user.username)
+    # if username or email found in database - the user is exists 
     if any([user_from_db_by_email, user_from_db_by_username]):
         return True
     return False
@@ -92,7 +93,7 @@ async def get_current_user(
     validate payload from token and
     return current user object from database
     """
-    payload_schema = await verify_payload_from_token(payload)
+    payload_schema: Payload = await verify_payload_from_token(payload)
     await verify_token_time(payload_schema.exp)
-    user = await verify_token_email(payload_schema.email)
+    user: User = await verify_token_email(payload_schema.email)
     return user
