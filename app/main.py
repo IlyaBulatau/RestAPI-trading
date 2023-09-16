@@ -25,3 +25,4 @@ setup_app(app)
 # TODO - create wallets and ability buy products
 # TODO - create rate limiting
 # TODO - added status code to responses error
+# TODO - return headers in responses

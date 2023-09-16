@@ -123,14 +123,6 @@ async def create_product(current_user: GET_CURRENT_USER, product: ProductCreate)
             username=current_user.username,
             email=current_user.email,
             create_on=current_user.created_on,
-            payload=PayloadForUser(
-                links=[
-                    Link(
-                        detail="path to profile the user",
-                        href=USER_ROUTE_URI + f"/{product.owner.username}",
-                    )
-                ]
-            ),
         ),
         payload=PayloadForProduct(),
     )
