@@ -13,12 +13,12 @@ class Product(ProductBase):
     price: float
     created_on: datetime
     owner: UserResponseInfo
-    payload: Optional[PayloadForProduct] = []
+    payload: Optional[PayloadForProduct] = None
 
 
 class ProductList(ProductBase):
     products: list[Product]
-    payload: Optional[PayloadForProduct] = []
+    payload: Optional[PayloadForProduct] = None
 
 
 class ProductCreate(ProductBase):

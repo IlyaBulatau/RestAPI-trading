@@ -41,7 +41,7 @@ class UserAuthResponse(UserBase, Username):
     """
 
     id: UUID4
-    payload: Optional[PayloadForUser] = []
+    payload: Optional[PayloadForUser] = None
 
 
 class UserResponseInfo(UserBase, Username):
@@ -55,7 +55,7 @@ class UserResponseInfo(UserBase, Username):
     """
 
     create_on: datetime
-    payload: Optional[PayloadForUser] = []
+    payload: Optional[PayloadForUser] = None
 
 
 class UserUpdate(UserBase, Username):
@@ -78,4 +78,4 @@ class UserList(BaseModel):
     """
 
     users: list[UserResponseInfo]
-    payload: Optional[PayloadForUser] = []
+    payload: Optional[PayloadForUser] = None

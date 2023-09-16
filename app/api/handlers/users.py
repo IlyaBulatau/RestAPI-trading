@@ -5,10 +5,11 @@ from app.schemas.product import ProductList, Product as ProductScheme
 from app.schemas.user import UserResponseInfo, UserList, UserUpdate
 from app.database.managers import UserManager, ProductManager
 from app.database.connect import get_session
+from app.servise.cache import cache
 from app.settings.constance import USER_ROUTE_URI
 from app.servise.dependens import GET_CURRENT_USER, VALIDATE_USERNAME_REGULAR
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query, Path
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 
 from typing import Annotated
 
@@ -39,6 +40,7 @@ async def get_me_info(current_user: GET_CURRENT_USER):
     response_model=UserResponseInfo,
     response_description="Return user info by path param username",
 )
+@cache()
 async def get_user_by_username(username: VALIDATE_USERNAME_REGULAR):
     # try get user
     async with get_session() as session:
@@ -63,6 +65,7 @@ async def get_user_by_username(username: VALIDATE_USERNAME_REGULAR):
         response_model=ProductList,
         response_description="Return all products the user"
 )
+@cache()
 async def get_products_user(
     username: VALIDATE_USERNAME_REGULAR,
     limit: Annotated[
@@ -105,6 +108,7 @@ async def get_products_user(
     response_model=UserList,
     response_description="Return list of users start from 'offset' in the number of 'limit'",
 )
+@cache()
 async def get_all_users(
     limit: Annotated[
         int, Query(ge=1, le=100, description="number of results to be returned")
