@@ -1,13 +1,14 @@
 from app.database.models.user import User
 from app.auth.actions import get_current_user
 from app.schemas.payload import PayloadForUser, Link
+from app.schemas.product import ProductList, Product as ProductScheme
 from app.schemas.user import UserResponseInfo, UserList, UserUpdate
-from app.database.managers import UserManager
+from app.database.managers import UserManager, ProductManager
 from app.database.connect import get_session
 from app.settings.constance import USER_ROUTE_URI
 from app.servise.dependens import GET_CURRENT_USER, VALIDATE_USERNAME_REGULAR
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Path
 
 from typing import Annotated
 
@@ -53,6 +54,48 @@ async def get_user_by_username(username: VALIDATE_USERNAME_REGULAR):
         username=user.username,
         create_on=user.created_on,
         payload=PayloadForUser(),
+    )
+
+
+@router.get(
+        "/{username}/products",
+        status_code=200,
+        response_model=ProductList,
+        response_description="Return all products the user"
+)
+async def get_products_user(
+    username: VALIDATE_USERNAME_REGULAR,
+    limit: Annotated[
+        int, Query(ge=1, le=100, description="number of results to be returned")
+    ] = 10,
+    offset: Annotated[
+        int, Query(ge=1, le=100000, description="starting from number")
+    ] = 1,
+):
+    async with get_session() as session:
+        database = ProductManager(session)
+        user = await database.get_user_by_username(username=username)
+        products = await database.get_product_by_user_id(user.id, limit, offset-1)
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="username not found"
+        )
+
+    return ProductList(
+        products=[
+            ProductScheme(
+                **database.model_dump(product),
+                owner=UserResponseInfo(
+                    username=user.username,
+                    email=user.email,
+                    create_on=user.created_on
+                )
+            )
+            for product in products
+        ],
+        payload=PayloadForUser()
     )
 
 

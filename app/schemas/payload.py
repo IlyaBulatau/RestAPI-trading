@@ -26,6 +26,10 @@ class PayloadForUser(PayloadBase):
             href=USER_ROUTE_URI + "/<input username>/delete",
             method="DELETE",
         ),
+        Link(
+            detail="get all products specific user",
+            href=USER_ROUTE_URI + "/<input username>/products",
+        ),
     ]
 
 

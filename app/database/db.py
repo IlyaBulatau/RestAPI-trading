@@ -18,3 +18,12 @@ class Database(ABC):
         result = await self.session.execute(query)
         user = result.scalars().first()
         return user
+
+    async def get_user_by_username(self, username) -> User:
+        """
+        Accept username from request, and look up user in the database
+        """
+        query = select(User).where(User.username == username)
+        result = await self.session.execute(query)
+        user: User | None = result.scalars().first()
+        return user

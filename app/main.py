@@ -17,7 +17,6 @@ app = FastAPI(
 setup_app(app)
 
 # TODO - create caching requests
-# TODO - add HATEOAS
 # TODO - write tests
 # TODO - create handler error
 # TODO - add order_by for user_list response
@@ -25,3 +24,4 @@ setup_app(app)
 # TODO - remove code duplication
 # TODO - create wallets and ability buy products
 # TODO - create rate limiting
+# TODO - added status code to responses error
