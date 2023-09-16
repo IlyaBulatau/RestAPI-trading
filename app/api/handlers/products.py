@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Path, HTTPException, status
 
 from typing import Annotated
 
@@ -58,3 +58,40 @@ async def get_all_products(
                 )
             )
     return ProductList(products=response_list)
+
+
+@router.get(
+    "/{product_id}",
+    response_model=ProductSchema,
+    status_code=200,
+    response_description="Return the product by id",
+)
+async def get_product_by_id(
+    product_id: Annotated[
+        int, Path(ge=0, description="ID the product")
+        
+    ]
+):
+    async with get_session() as session:
+        database = ProductManager(session)
+
+        product: Product = await database.get_product_by_id(product_id=product_id)
+
+    if not product:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Product Not Found"
+        )
+
+    return ProductSchema(
+        id=product_id,
+        title=product.title,
+        description=product.description,
+        price=product.price,
+        create_on=product.created_on,
+        owner=UserResponseInfo(
+            username=product.owner.username,
+            email=product.owner.email,
+            create_on=product.owner.created_on,
+        )
+    )

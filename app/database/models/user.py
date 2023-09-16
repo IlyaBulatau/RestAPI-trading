@@ -21,3 +21,4 @@ class User(Base):
     hash_password: orm.Mapped[str] = orm.mapped_column(
         db.String(length=90), nullable=False
     )
+    products = orm.relationship("Product", backref="owner")

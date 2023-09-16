@@ -44,7 +44,7 @@ async def get_user_by_username(username: VALIDATE_USERNAME_REGULAR):
 
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Page Not Found"
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="User Not Found"
         )
     return UserResponseInfo(
         email=user.email, username=user.username, create_on=user.created_on

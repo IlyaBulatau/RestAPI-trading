@@ -19,7 +19,7 @@ async def get_session() -> AsyncSession:
     try:
         yield session
         await session.commit()
-    except:
+    except Exception as e:
         await session.rollback()
     finally:
         await session.close()

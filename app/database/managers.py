@@ -6,6 +6,7 @@ from app.serializers.user import UserSerializer
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import UUID, select
+from sqlalchemy import orm
 
 
 class ProductManager(Database):
@@ -17,8 +18,19 @@ class ProductManager(Database):
     async def get_products(self, limit, offset) -> list[Product]:
         query = select(Product).offset(offset).limit(limit)
         result = await self.session.execute(query)
-        products = result.scalars().all()
+        products: list[Product] | None = result.scalars().all()
         return products
+
+
+    async def get_product_by_id(self, product_id: int) -> Product:
+        query = select(Product).options(
+            orm.joinedload(
+                Product.owner
+            )
+        ).where(Product.id == product_id)
+        result = await self.session.execute(query)
+        product: Product | None = result.scalars().first()
+        return product
 
 
 class UserManager(Database):
@@ -33,7 +45,7 @@ class UserManager(Database):
         """
         query = select(User).where(User.email == email)
         result = await self.session.execute(query)
-        user = result.scalars().first()
+        user: User | None = result.scalars().first()
         return user
 
 
@@ -43,7 +55,7 @@ class UserManager(Database):
         """
         query = select(User).where(User.username == username)
         result = await self.session.execute(query)
-        user = result.scalars().first()
+        user: User | None = result.scalars().first()
         return user
 
 
@@ -54,7 +66,7 @@ class UserManager(Database):
         """
         query = select(User).offset(offset).limit(limit)
         result = await self.session.execute(query)
-        users = result.scalars().all()
+        users: list[User] | None = result.scalars().all()
         return users
 
 
