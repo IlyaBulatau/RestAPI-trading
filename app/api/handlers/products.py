@@ -11,6 +11,7 @@ from app.database.connect import get_session
 from app.database.managers import ProductManager
 from app.database.models.product import Product
 from app.schemas.user import UserResponseInfo
+from app.servise.cache import cache
 
 
 router = APIRouter(
@@ -26,6 +27,7 @@ router = APIRouter(
     status_code=200,
     response_description="Return all products",
 )
+@cache(ttl=10)
 async def get_all_products(
     limit: Annotated[
         int, Query(ge=1, le=100, description="number of results to be returned")
@@ -70,6 +72,7 @@ async def get_all_products(
     status_code=200,
     response_description="Return the product by id",
 )
+@cache()
 async def get_product_by_id(
     product_id: Annotated[int, Path(ge=0, description="ID the product")]
 ):

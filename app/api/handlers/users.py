@@ -108,7 +108,7 @@ async def get_products_user(
     response_model=UserList,
     response_description="Return list of users start from 'offset' in the number of 'limit'",
 )
-@cache()
+@cache(10)
 async def get_all_users(
     limit: Annotated[
         int, Query(ge=1, le=100, description="number of results to be returned")

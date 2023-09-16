@@ -15,6 +15,7 @@ CACHE_PREFIX = "cache_get_requests"
 def cache(ttl: int = 600):
     """
     Caches the endpoint result
+    ttl - total time live(time in second) default 10min
     """
     def wrapper(func: Coroutine):
 
