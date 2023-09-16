@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from typing import Annotated
 
 from app.schemas.user import UserAuthResponse, UserAuth
-from app.schemas.payload import Payload as PayloadResponse, Link
+from app.schemas.payload import PayloadForUser, Link
 from app.schemas.token import Token, Payload
 from app.database.managers import UserManager
 from app.database.connect import get_session
@@ -37,7 +37,7 @@ async def signup_process(user: UserAuth):
         id=user_with_id.id,
         email=new_user.email,
         username=new_user.username,
-        payload=PayloadResponse(
+        payload=PayloadForUser(
             links=[Link(detail="login path", href=AUTH_ROUTE_URI + "/login")]
         ),
     )

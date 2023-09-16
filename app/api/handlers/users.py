@@ -1,5 +1,6 @@
 from app.database.models.user import User
 from app.auth.actions import get_current_user
+from app.schemas.payload import PayloadForUser, Link
 from app.schemas.user import UserResponseInfo, UserList, UserUpdate
 from app.database.managers import UserManager
 from app.database.connect import get_session
@@ -27,6 +28,7 @@ async def get_me_info(current_user: GET_CURRENT_USER):
         email=current_user.email,
         username=current_user.username,
         create_on=current_user.created_on,
+        payload=PayloadForUser(),
     )
 
 
@@ -47,7 +49,10 @@ async def get_user_by_username(username: VALIDATE_USERNAME_REGULAR):
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="User Not Found"
         )
     return UserResponseInfo(
-        email=user.email, username=user.username, create_on=user.created_on
+        email=user.email,
+        username=user.username,
+        create_on=user.created_on,
+        payload=PayloadForUser(),
     )
 
 
@@ -74,10 +79,21 @@ async def get_all_users(
     return UserList(
         users=[
             UserResponseInfo(
-                email=user.email, username=user.username, create_on=user.created_on
+                email=user.email,
+                username=user.username,
+                create_on=user.created_on,
+                payload=PayloadForUser(
+                    links=[
+                        Link(
+                            detail="path to profile the user",
+                            href=USER_ROUTE_URI + f"/{user.username}",
+                        )
+                    ]
+                ),
             )
             for user in users
-        ]
+        ],
+        payload=PayloadForUser(),
     )
 
 

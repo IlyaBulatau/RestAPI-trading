@@ -1,9 +1,10 @@
 from pydantic import BaseModel, UUID4, Field, EmailStr
 
 from app.schemas.base import UserBase, Username, Password
-from app.schemas.payload import Payload
+from app.schemas.payload import PayloadForUser
 
 from datetime import datetime
+from typing import Optional
 
 
 class UserAuth(UserBase, Username, Password):
@@ -36,10 +37,11 @@ class UserAuthResponse(UserBase, Username):
     - id
     - email
     - username
+    - payload[opt]
     """
 
     id: UUID4
-    payload: Payload | None
+    payload: Optional[PayloadForUser] = []
 
 
 class UserResponseInfo(UserBase, Username):
@@ -49,9 +51,11 @@ class UserResponseInfo(UserBase, Username):
     - email
     - username
     - create_on
+    - payload[opt]
     """
 
     create_on: datetime
+    payload: Optional[PayloadForUser] = []
 
 
 class UserUpdate(UserBase, Username):
@@ -74,3 +78,4 @@ class UserList(BaseModel):
     """
 
     users: list[UserResponseInfo]
+    payload: Optional[PayloadForUser] = []
