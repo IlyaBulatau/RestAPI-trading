@@ -3,9 +3,10 @@ from fastapi import APIRouter, Depends, Query, Path, HTTPException, status
 from typing import Annotated
 
 from app.servise.dependens import GET_CURRENT_USER
-from app.settings.constance import PRODUCT_ROUTER_API
+from app.settings.constance import PRODUCT_ROUTER_API, USER_ROUTE_URI
 from app.auth.actions import get_current_user
 from app.schemas.product import Product as ProductSchema, ProductList, ProductCreate
+from app.schemas.payload import PayloadForUser, Link
 from app.database.connect import get_session
 from app.database.managers import ProductManager
 from app.database.models.product import Product
@@ -47,6 +48,9 @@ async def get_all_products(
                     username=product.owner.username,
                     email=product.owner.email,
                     create_on=product.owner.created_on,
+                    payload=PayloadForUser(links=[
+                        Link(detail="path to profile the user", href=USER_ROUTE_URI+f"/{product.owner.username}")
+                    ]),
                 ),
             )
             for product in products
@@ -79,6 +83,9 @@ async def get_product_by_id(
             username=product.owner.username,
             email=product.owner.email,
             create_on=product.owner.created_on,
+            payload=PayloadForUser(links=[
+                Link(detail="path to profile the user", href=USER_ROUTE_URI+f"/{product.owner.username}")
+            ])
         ),
     )
 
