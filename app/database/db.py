@@ -11,6 +11,9 @@ class Database(ABC):
         self.session: AsyncSession = session
 
     async def get_user_by_id(self, id: UUID) -> User:
+        """
+        Return user model from database by ID
+        """
         query = select(User).where(User.id == id)
         result = await self.session.execute(query)
         user = result.scalars().first()

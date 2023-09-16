@@ -14,6 +14,12 @@ class ProductManager(Database):
         super().__init__(session)
 
     async def get_products(self, limit, offset) -> list[Product]:
+        """
+        Get all product from database
+        Accept:
+        :limit - how many object need to be taken
+        :offset - starting from
+        """
         query = (
             select(Product)
             .options(orm.joinedload(Product.owner))
@@ -25,6 +31,11 @@ class ProductManager(Database):
         return products
 
     async def get_product_by_id(self, product_id: int) -> Product:
+        """
+        Accept ID the product
+        Search the product obj with its owner obj in the database
+        Return Product obj
+        """
         query = (
             select(Product)
             .options(orm.joinedload(Product.owner))
@@ -35,6 +46,12 @@ class ProductManager(Database):
         return product
 
     async def create_product(self, dict_schema: dict, owner: User) -> Product:
+        """
+        Accept:
+        :dict_scema - converted from Product schemas to dict obj
+        :owner User model from database
+        Insert in database product and return new product obj
+        """
         query = (
             insert(Product)
             .values(
@@ -52,6 +69,9 @@ class ProductManager(Database):
 
     @staticmethod
     def model_dump(database_model: Product):
+        """
+        Converted Product model from database to Dict
+        """
         return {
             "id": database_model.id,
             "title": database_model.title,

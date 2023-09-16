@@ -24,3 +24,4 @@ setup_app(app)
 # TODO - write error handler in endpoints
 # TODO - remove code duplication
 # TODO - create wallets and ability buy products
+# TODO - create rate limiting
