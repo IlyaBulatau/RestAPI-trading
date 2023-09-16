@@ -4,6 +4,7 @@ from functools import wraps
 from typing import Coroutine
 import json
 
+from app.settings.constance import CACHE_TTL_SEC
 from app.settings.config import Settings
 
 
@@ -12,7 +13,7 @@ redis: Redis = from_url(f"redis://{Settings().REDIS_HOST}", decode_responses=Tru
 CACHE_PREFIX = "cache_get_requests"
 
 
-def cache(ttl: int = 600):
+def cache(ttl: int = CACHE_TTL_SEC):
     """
     Caches the endpoint result
     ttl - total time live(time in second) default 10min
