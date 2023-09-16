@@ -4,12 +4,35 @@ from app.settings import constance as c
 
 
 class UserBase(BaseModel):
+    """
+    Base scheme for work with users
+    """
+
     model_config = ConfigDict(
         from_attributes=True,
         extra="forbid",
     )
 
     email: EmailStr
+
+
+class PayloadBase(BaseModel):
+    """
+    Base scheme for work with payload which is added to responses
+    """
+
+    model_config = ConfigDict(from_attributes=True, extra="allow")
+
+
+class ProductBase(BaseModel):
+    """
+    Base scheme for work with products
+    """
+
+    model_config = ConfigDict(
+        from_attributes=True,
+        extra="forbid",
+    )
 
 
 class Username(BaseModel):
@@ -32,14 +55,3 @@ class Password(BaseModel):
     def password_validate(cls, password: str) -> str:
         val.password_validate(password)
         return password
-
-
-class PayloadBase(BaseModel):
-    ...
-
-
-class ProductBase(BaseModel):
-    model_config = ConfigDict(
-        from_attributes=True,
-        extra="forbid",
-    )

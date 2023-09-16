@@ -1,6 +1,7 @@
 from pydantic import BaseModel, UUID4, Field, EmailStr
 
 from app.schemas.base import UserBase, Username, Password
+from app.schemas.payload import Payload
 
 from datetime import datetime
 
@@ -38,6 +39,7 @@ class UserAuthResponse(UserBase, Username):
     """
 
     id: UUID4
+    payload: Payload | None
 
 
 class UserResponseInfo(UserBase, Username):

@@ -16,8 +16,8 @@ async_session = async_sessionmaker(
 @asynccontextmanager
 async def get_session() -> AsyncSession:
     """
-    opens a session to work with transactions 
-    if an exception occurs rolls back changes 
+    opens a session to work with transactions
+    if an exception occurs rolls back changes
     after work with transactions has stopped closes the session
     """
     session = async_session()
