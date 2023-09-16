@@ -1,7 +1,7 @@
-from pydantic import BaseModel, UUID4, Field, EmailStr
+from pydantic import BaseModel, UUID4, Field, EmailStr, validator
 
 from app.schemas.base import UserBase, Username, Password
-from app.schemas.payload import PayloadForUser
+from app.schemas.payload import PayloadForUser, Link
 
 from datetime import datetime
 from typing import Optional
