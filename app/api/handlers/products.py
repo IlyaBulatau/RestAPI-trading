@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, Query, Path, HTTPException, status
 
 from typing import Annotated
 
+from app.servise.dependens import GET_CURRENT_USER
 from app.settings.constance import PRODUCT_ROUTER_API
 from app.auth.actions import get_current_user
-from app.schemas.product import Product as ProductSchema, ProductList
+from app.schemas.product import Product as ProductSchema, ProductList, ProductCreate
 from app.database.connect import get_session
 from app.database.managers import ProductManager
-from app.database.models.user import User
 from app.database.models.product import Product
 from app.schemas.user import UserResponseInfo
 
@@ -38,14 +38,11 @@ async def get_all_products(
         products: list[Product] = await database.get_products(
             limit=limit, offset=offset - 1
         )
+
     return ProductList(
         products=[
             ProductSchema(
-                id=product.id,
-                title=product.title,
-                description=product.description,
-                price=product.price,
-                create_on=product.created_on,
+                **database.model_dump(product),
                 owner=UserResponseInfo(
                     username=product.owner.username,
                     email=product.owner.email,
@@ -75,15 +72,37 @@ async def get_product_by_id(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Product Not Found"
         )
 
+    model_dump = database.model_dump(product)
     return ProductSchema(
-        id=product_id,
-        title=product.title,
-        description=product.description,
-        price=product.price,
-        create_on=product.created_on,
+        **model_dump,
         owner=UserResponseInfo(
             username=product.owner.username,
             email=product.owner.email,
             create_on=product.owner.created_on,
+        ),
+    )
+
+
+@router.post(
+    "/",
+    response_model=ProductSchema,
+    status_code=201,
+    response_description="Return the product after if has been created",
+)
+async def create_product(current_user: GET_CURRENT_USER, product: ProductCreate):
+    async with get_session() as session:
+        database = ProductManager(session)
+
+        new_product: Product = await database.create_product(
+            product.model_dump(), owner=current_user
+        )
+
+    model_dump = database.model_dump(new_product)
+    return ProductSchema(
+        **model_dump,
+        owner=UserResponseInfo(
+            username=current_user.username,
+            email=current_user.email,
+            create_on=current_user.created_on,
         ),
     )

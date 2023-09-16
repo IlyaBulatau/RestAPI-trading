@@ -5,7 +5,7 @@ from app.database.models.product import Product
 from app.serializers.user import UserSerializer
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import UUID, select
+from sqlalchemy import UUID, select, insert
 from sqlalchemy import orm
 
 
@@ -33,6 +33,32 @@ class ProductManager(Database):
         result = await self.session.execute(query)
         product: Product | None = result.scalars().first()
         return product
+
+    async def create_product(self, dict_schema: dict, owner: User) -> Product:
+        query = (
+            insert(Product)
+            .values(
+                title=dict_schema["title"],
+                description=dict_schema["description"],
+                price=dict_schema["price"],
+                user_id=owner.id,
+            )
+            .returning(Product)
+        )
+
+        result = await self.session.execute(query)
+        product = result.scalars().first()
+        return product
+
+    @staticmethod
+    def model_dump(database_model: Product):
+        return {
+            "id": database_model.id,
+            "title": database_model.title,
+            "description": database_model.description,
+            "price": database_model.price,
+            "created_on": database_model.created_on,
+        }
 
 
 class UserManager(Database):

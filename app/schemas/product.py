@@ -9,9 +9,15 @@ class Product(ProductBase):
     title: str
     description: str
     price: float
-    create_on: datetime
+    created_on: datetime
     owner: UserResponseInfo
 
 
 class ProductList(ProductBase):
     products: list[Product]
+
+
+class ProductCreate(ProductBase):
+    title: str
+    description: str
+    price: float
