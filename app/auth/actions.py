@@ -60,8 +60,10 @@ async def is_exists_user(user: UserAuth) -> bool:
     async with get_session() as session:
         database = UserManager(session)
         user_from_db_by_email: User = await database.get_user_by_email(user.email)
-        user_from_db_by_username: User = await database.get_user_by_username(user.username)
-    # if username or email found in database - the user is exists 
+        user_from_db_by_username: User = await database.get_user_by_username(
+            user.username
+        )
+    # if username or email found in database - the user is exists
     if any([user_from_db_by_email, user_from_db_by_username]):
         return True
     return False

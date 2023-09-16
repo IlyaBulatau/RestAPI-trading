@@ -38,26 +38,23 @@ async def get_all_products(
         products: list[Product] = await database.get_products(
             limit=limit, offset=offset - 1
         )
-        response_list: list[ProductSchema] = []
-        for product in products:
-            # get the product owner
-            owner: User = await database.get_user_by_id(product.user_id)
-            # generate schema
-            response_list.append(
-                ProductSchema(
-                    id=product.id,
-                    title=product.title,
-                    description=product.description,
-                    price=product.price,
-                    create_on=product.created_on,
-                    owner=UserResponseInfo(
-                        username=owner.username,
-                        email=owner.email,
-                        create_on=owner.created_on,
-                    ),
-                )
+    return ProductList(
+        products=[
+            ProductSchema(
+                id=product.id,
+                title=product.title,
+                description=product.description,
+                price=product.price,
+                create_on=product.created_on,
+                owner=UserResponseInfo(
+                    username=product.owner.username,
+                    email=product.owner.email,
+                    create_on=product.owner.created_on,
+                ),
             )
-    return ProductList(products=response_list)
+            for product in products
+        ]
+    )
 
 
 @router.get(
@@ -67,20 +64,15 @@ async def get_all_products(
     response_description="Return the product by id",
 )
 async def get_product_by_id(
-    product_id: Annotated[
-        int, Path(ge=0, description="ID the product")
-        
-    ]
+    product_id: Annotated[int, Path(ge=0, description="ID the product")]
 ):
     async with get_session() as session:
         database = ProductManager(session)
-
         product: Product = await database.get_product_by_id(product_id=product_id)
 
     if not product:
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Product Not Found"
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Product Not Found"
         )
 
     return ProductSchema(
@@ -93,5 +85,5 @@ async def get_product_by_id(
             username=product.owner.username,
             email=product.owner.email,
             create_on=product.owner.created_on,
-        )
+        ),
     )

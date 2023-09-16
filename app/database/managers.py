@@ -10,34 +10,34 @@ from sqlalchemy import orm
 
 
 class ProductManager(Database):
-
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session)
 
-
     async def get_products(self, limit, offset) -> list[Product]:
-        query = select(Product).offset(offset).limit(limit)
+        query = (
+            select(Product)
+            .options(orm.joinedload(Product.owner))
+            .offset(offset)
+            .limit(limit)
+        )
         result = await self.session.execute(query)
         products: list[Product] | None = result.scalars().all()
         return products
 
-
     async def get_product_by_id(self, product_id: int) -> Product:
-        query = select(Product).options(
-            orm.joinedload(
-                Product.owner
-            )
-        ).where(Product.id == product_id)
+        query = (
+            select(Product)
+            .options(orm.joinedload(Product.owner))
+            .where(Product.id == product_id)
+        )
         result = await self.session.execute(query)
         product: Product | None = result.scalars().first()
         return product
 
 
 class UserManager(Database):
-
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session)
-
 
     async def get_user_by_email(self, email) -> User:
         """
@@ -48,7 +48,6 @@ class UserManager(Database):
         user: User | None = result.scalars().first()
         return user
 
-
     async def get_user_by_username(self, username) -> User:
         """
         Accept username from request, and look up user in the database
@@ -57,7 +56,6 @@ class UserManager(Database):
         result = await self.session.execute(query)
         user: User | None = result.scalars().first()
         return user
-
 
     async def get_users_from_db(self, limit, offset) -> list[User]:
         """
@@ -69,7 +67,6 @@ class UserManager(Database):
         users: list[User] | None = result.scalars().all()
         return users
 
-
     async def create_user_in_db(self, user: UserAuth) -> UUID:
         """
         Create new user in the database
@@ -79,8 +76,6 @@ class UserManager(Database):
         new_user = User(**user_serialization)
         self.session.add(new_user)
         return new_user
-
-
 
     async def update_user(self, user: User, data: UserUpdate) -> None:
         """
