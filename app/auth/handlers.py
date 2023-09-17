@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 
 from typing import Annotated
 
+from app.servise.cache import cache_reset
 from app.schemas.user import UserAuthResponse, UserAuth
 from app.schemas.payload import PayloadForUser, Link
 from app.schemas.token import Token, Payload
@@ -22,6 +23,7 @@ router = APIRouter(prefix=AUTH_ROUTE_URI, tags=["auth"])
     status_code=201,
     response_description="Responce userID, username and email",
 )
+@cache_reset("get_all_users")
 async def signup_process(user: UserAuth):
     """
     Handles registration process

@@ -60,10 +60,10 @@ async def get_user_by_username(username: VALIDATE_USERNAME_REGULAR):
 
 
 @router.get(
-        "/{username}/products",
-        status_code=200,
-        response_model=ProductList,
-        response_description="Return all products the user"
+    "/{username}/products",
+    status_code=200,
+    response_model=ProductList,
+    response_description="Return all products the user",
 )
 @cache()
 async def get_products_user(
@@ -78,12 +78,12 @@ async def get_products_user(
     async with get_session() as session:
         database = ProductManager(session)
         user = await database.get_user_by_username(username=username)
-        products = await database.get_product_by_user_id(user.id, limit, offset-1)
+        products = await database.get_product_by_user_id(user.id, limit, offset - 1)
 
     if not user:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="username not found"
+            detail="username not found",
         )
 
     return ProductList(
@@ -91,14 +91,12 @@ async def get_products_user(
             ProductScheme(
                 **database.model_dump(product),
                 owner=UserResponseInfo(
-                    username=user.username,
-                    email=user.email,
-                    create_on=user.created_on
-                )
+                    username=user.username, email=user.email, create_on=user.created_on
+                ),
             )
             for product in products
         ],
-        payload=PayloadForUser()
+        payload=PayloadForUser(),
     )
 
 
@@ -108,7 +106,7 @@ async def get_products_user(
     response_model=UserList,
     response_description="Return list of users start from 'offset' in the number of 'limit'",
 )
-@cache(10)
+@cache()
 async def get_all_users(
     limit: Annotated[
         int, Query(ge=1, le=100, description="number of results to be returned")

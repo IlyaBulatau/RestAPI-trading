@@ -66,19 +66,24 @@ class ProductManager(Database):
         result = await self.session.execute(query)
         product = result.scalars().first()
         return product
-    
 
-    async def get_product_by_user_id(self, user_id: UUID, limit: int, offset: int) -> list[Product]:
+    async def get_product_by_user_id(
+        self, user_id: UUID, limit: int, offset: int
+    ) -> list[Product]:
         """
         Accept user ID
         Return all products the user
         """
-        query = select(Product).where(Product.user_id == user_id).limit(limit).offset(offset)
+        query = (
+            select(Product)
+            .where(Product.user_id == user_id)
+            .limit(limit)
+            .offset(offset)
+        )
 
         result = await self.session.execute(query)
         products: list[Product] | None = result.scalars().all()
         return products
-
 
     @staticmethod
     def model_dump(database_model: Product):
@@ -98,7 +103,6 @@ class UserManager(Database):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session)
 
-
     async def get_user_by_email(self, email) -> User:
         """
         Accepts validated email and looks up the user in the database
@@ -107,7 +111,6 @@ class UserManager(Database):
         result = await self.session.execute(query)
         user: User | None = result.scalars().first()
         return user
-
 
     async def get_users_from_db(self, limit, offset) -> list[User]:
         """

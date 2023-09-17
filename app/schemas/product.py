@@ -25,4 +25,3 @@ class ProductCreate(ProductBase):
     title: str
     description: str
     price: float
-
