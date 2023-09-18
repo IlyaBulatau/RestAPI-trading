@@ -9,16 +9,6 @@ from fastapi import status
 from fastapi.exceptions import HTTPException
 
 
-async def verify_token_time(exp: datetime) -> None:
-    """
-    Checking token time exp and compare with datetime now
-    """
-    if datetime.utcnow() > exp:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token time is up"
-        )
-
-
 async def verify_token_email(email: str) -> User:
     """
     Check if there is an email in the database

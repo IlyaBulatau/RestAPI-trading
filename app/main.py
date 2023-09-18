@@ -16,6 +16,7 @@ app = FastAPI(
 
 setup_app(app)
 
+# TODO - create chache verify current user
 # TODO - write tests
 # TODO - create handler error
 # TODO - add order_by for user_list response
