@@ -5,7 +5,7 @@ from app.database.models.user import User
 from app.database.managers import UserManager
 from app.settings.config import TokenSettings
 from app.database.connect import get_session
-from app.exeptions.client.exeptions import TokenException
+from app.exeptions import client_exception, client_schemes
 from app.auth.verify_token import (
     verify_payload_from_token,
     verify_token_email,
@@ -82,7 +82,13 @@ async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):
         )
         return payload
     except ExpiredSignatureError as e:
-        raise TokenException(detail="Token expired, sorry", status_code=401)
+        raise client_exception.TokenException(
+            status_code=401,
+            detail=client_schemes.TokenExeptionScheme(
+                code=401,
+                message="You token is expired"
+            ).model_dump()
+            )
 
 
 async def get_current_user(

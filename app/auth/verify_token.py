@@ -4,6 +4,7 @@ from app.schemas.token import Payload
 from app.database.models.user import User
 from app.database.managers import UserManager
 from app.database.connect import get_session
+from app.exeptions import client_exception, client_schemes
 
 from fastapi import status
 from fastapi.exceptions import HTTPException
@@ -17,11 +18,16 @@ async def verify_token_email(email: str) -> User:
     async with get_session() as session:
         database = UserManager(session)
         user: User = await database.get_user_by_email(email)
-    if user:
-        return user
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED, detail="You token is invalid"
-    )
+    if not user:
+        raise client_exception.TokenException(
+            status_code=401,
+            detail=client_schemes.TokenExeptionScheme(
+                code=401,
+                message="You token is invalid"
+            )
+        )
+    return user
+    
 
 
 async def verify_payload_from_token(payload: dict) -> Payload:
@@ -37,7 +43,11 @@ async def verify_payload_from_token(payload: dict) -> Payload:
     verify_payload = Payload(**copy_payload)
 
     if copy_payload != dict(verify_payload):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
+        raise client_exception.TokenException(
+            status_code=401,
+            detail=client_schemes.TokenExeptionScheme(
+                code=401,
+                message="You token is invalid"
+            )
         )
     return verify_payload

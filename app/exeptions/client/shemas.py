@@ -1,24 +1,11 @@
-from pydantic import BaseModel, Field
-
-from typing import Dict
+from pydantic import BaseModel, ConfigDict
 
 
-class Desciption(BaseModel):
-    """
-    Schema for description exeptions
-    """
-
-    field: str | None
-    text: str | None
+class BaseExceptionScheme(BaseModel):
+    status: str = "Error"
+    code: int
+    message: str
 
 
-class UserExeptionResponse(BaseModel):
-    """
-    response scheme when a user enters an existing email during registration
-    """
-
-    title: str = Field(alias="title", description="Title http exeption")
-    status: int = Field(alias="status", description="Http response status")
-    description: Dict = Field(
-        alias="description", description="The field include data about invalid email"
-    )
+class TokenExeptionScheme(BaseExceptionScheme):
+    pass
