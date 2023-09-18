@@ -39,15 +39,23 @@ async def authenticate_user(user: UserLogin) -> User:
         user_from_db: User = await database.get_user_by_email(user.email)
     # if user not found in database
     if not user_from_db:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="user not found"
+        raise client_exception.AuthException(
+            status_code=401,
+            detail=client_schemes.AuthExceptionScheme(
+                code=401,
+                message=f"User with email {user.email} not found"
+            ).model_dump()
         )
     # password invalid
     if not verify_password(
         password=user.password, hash_password=user_from_db.hash_password
     ):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid password"
+        raise client_exception.AuthException(
+            status_code=401,
+            detail=client_schemes.AuthExceptionScheme(
+                code=401,
+                message="Invalid Password",
+            ).model_dump()
         )
     return user_from_db
 

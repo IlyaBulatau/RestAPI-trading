@@ -10,3 +10,7 @@ def setup_exeption_handler(app: FastAPI):
         exc_class_or_status_code=client_exception.TokenException,
         handler=client_handlers.token_exception_handler,
     )
+    app.add_exception_handler(
+        exc_class_or_status_code=client_exception.AuthException,
+        handler=client_handlers.auth_exception_handler
+    )

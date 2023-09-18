@@ -9,3 +9,7 @@ class BaseExceptionScheme(BaseModel):
 
 class TokenExeptionScheme(BaseExceptionScheme):
     pass
+
+
+class AuthExceptionScheme(BaseExceptionScheme):
+    pass
