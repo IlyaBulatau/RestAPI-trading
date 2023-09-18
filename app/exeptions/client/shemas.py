@@ -13,3 +13,7 @@ class TokenExeptionScheme(BaseExceptionScheme):
 
 class AuthExceptionScheme(BaseExceptionScheme):
     pass
+
+
+class RequestValidationScheme(BaseExceptionScheme):
+    pass
