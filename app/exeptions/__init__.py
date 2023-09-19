@@ -16,13 +16,13 @@ def setup_exeption_handler(app: FastAPI):
     )
     app.add_exception_handler(
         exc_class_or_status_code=client_exception.AuthException,
-        handler=client_handlers.auth_exception_handler
+        handler=client_handlers.auth_exception_handler,
     )
     app.add_exception_handler(
         exc_class_or_status_code=RequestValidationError,
-        handler=client_handlers.request_exception_handler
+        handler=client_handlers.request_exception_handler,
     )
     app.add_exception_handler(
         exc_class_or_status_code=server_exception.ServerError,
-        handler=server_handlers.server_error_handler
+        handler=server_handlers.server_error_handler,
     )

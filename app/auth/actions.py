@@ -42,9 +42,8 @@ async def authenticate_user(user: UserLogin) -> User:
         raise client_exception.AuthException(
             status_code=401,
             detail=client_schemes.AuthExceptionScheme(
-                code=401,
-                message=f"User with email {user.email} not found"
-            ).model_dump()
+                code=401, message=f"User with email {user.email} not found"
+            ).model_dump(),
         )
     # password invalid
     if not verify_password(
@@ -55,7 +54,7 @@ async def authenticate_user(user: UserLogin) -> User:
             detail=client_schemes.AuthExceptionScheme(
                 code=401,
                 message="Invalid Password",
-            ).model_dump()
+            ).model_dump(),
         )
     return user_from_db
 
@@ -93,10 +92,9 @@ async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):
         raise client_exception.TokenException(
             status_code=401,
             detail=client_schemes.TokenExeptionScheme(
-                code=401,
-                message="You token is expired"
-            ).model_dump()
-            )
+                code=401, message="You token is expired"
+            ).model_dump(),
+        )
 
 
 async def get_current_user(

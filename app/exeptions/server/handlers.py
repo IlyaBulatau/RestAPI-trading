@@ -8,5 +8,7 @@ from app.exeptions.server.shemes import ServerExceptionSchemes
 async def server_error_handler(request: Request, exc: ValidationException):
     return JSONResponse(
         status_code=500,
-        content=ServerExceptionSchemes(message="Ops, temporary problems on the server").model_dump()
-        )
+        content=ServerExceptionSchemes(
+            message="Ops, temporary problems on the server"
+        ).model_dump(),
+    )

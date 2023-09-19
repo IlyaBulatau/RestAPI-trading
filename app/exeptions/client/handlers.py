@@ -10,7 +10,7 @@ async def token_exception_handler(request: Request, exc: TokenException):
     return JSONResponse(content=exc.detail, status_code=exc.status_code)
 
 
-async def auth_exception_handler(request: Request, exc:AuthException):
+async def auth_exception_handler(request: Request, exc: AuthException):
     return JSONResponse(content=exc.detail, status_code=exc.status_code)
 
 
@@ -18,6 +18,6 @@ async def request_exception_handler(request: Request, exc: RequestValidationErro
     return JSONResponse(
         status_code=422,
         content=RequestValidationScheme(
-            code=422,
-            message="Please, enter all required fields"
-    ).model_dump())
+            code=422, message="Please, enter all required fields"
+        ).model_dump(),
+    )

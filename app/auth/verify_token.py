@@ -22,12 +22,10 @@ async def verify_token_email(email: str) -> User:
         raise client_exception.TokenException(
             status_code=401,
             detail=client_schemes.TokenExeptionScheme(
-                code=401,
-                message="You token is invalid"
-            )
+                code=401, message="You token is invalid"
+            ),
         )
     return user
-    
 
 
 async def verify_payload_from_token(payload: dict) -> Payload:
@@ -46,8 +44,7 @@ async def verify_payload_from_token(payload: dict) -> Payload:
         raise client_exception.TokenException(
             status_code=401,
             detail=client_schemes.TokenExeptionScheme(
-                code=401,
-                message="You token is invalid"
-            )
+                code=401, message="You token is invalid"
+            ),
         )
     return verify_payload

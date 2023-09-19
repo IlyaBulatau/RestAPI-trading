@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, EmailStr
 
 
 class Settings(BaseSettings):
@@ -25,3 +25,11 @@ class TokenSettings(Settings):
     TOKEN_ALGORITHM: str = "HS256"
     TOKEN_KEY: str = "1111"
     TOKEN_LIMIT_MINUTES: str = "10"
+
+
+class SMTPSettings(Settings):
+    LOGGER_EMAIL: EmailStr | None = None
+    LOGGER_PASSWORD: str | None = None
+    LOGGER_HOST: str | None = None
+    LOGGER_PORT: int | None = None
+    LOGGER_SUBJECT: str = "FastAPI server"

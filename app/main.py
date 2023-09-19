@@ -16,14 +16,9 @@ app = FastAPI(
 
 setup_app(app)
 
-# TODO - create chache verify current user
 # TODO - write tests
-# TODO - create handler error
-# TODO - add order_by for user_list response
-# TODO - write try except block in handlers
-# TODO - remove code duplication
+# TODO - add logging
+# TODO - add celery for smtp logging
 # TODO - create wallets and ability buy products
 # TODO - create rate limiting
-# TODO - added status code to responses error
 # TODO - return headers in responses
-# TODO - add logging

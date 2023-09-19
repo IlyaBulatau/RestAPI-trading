@@ -19,5 +19,3 @@ def password_validate(password: str) -> str:
             "the Password must be more than 8 characters long and contain letters of the English alphabet numbers and special characters"
         )
     return password
-
-
