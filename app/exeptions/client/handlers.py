@@ -14,7 +14,7 @@ async def auth_exception_handler(request: Request, exc:AuthException):
     return JSONResponse(content=exc.detail, status_code=exc.status_code)
 
 
-async def validation_error_handler(request: Request, exc: RequestValidationError):
+async def request_exception_handler(request: Request, exc: RequestValidationError):
     return JSONResponse(
         status_code=422,
         content=RequestValidationScheme(
