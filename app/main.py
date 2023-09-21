@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.settings.setups_app import setup_app
+from app.servise.bg_tasks.tasks import send_to_email_log
 
 
 app = FastAPI(
@@ -13,11 +14,10 @@ app = FastAPI(
         "email": "ilyabulatau@gmail.com",
     },
 )
-
+send_to_email_log.delay("SERVER APP")
 setup_app(app)
 
 # TODO - write tests
-# TODO - add celery for smtp logging
 # TODO - create wallets and ability buy products
 # TODO - create rate limiting
 # TODO - return headers in responses

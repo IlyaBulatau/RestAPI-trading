@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from app.settings.config import DataBaseSettings
 from app.exeptions.server.exceptions import ServerError
+from app.servise.bg_tasks.tasks import send_to_email_log
 
 
 async_engine = create_async_engine(
@@ -27,6 +28,7 @@ async def get_session() -> AsyncSession:
         await session.commit()
     except Exception as e:
         await session.rollback()
+        send_to_email_log.delay(f"DATABASE EXCEPTION:\n{str(e)}")
         raise ServerError("database")
     finally:
         await session.close()

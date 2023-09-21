@@ -16,7 +16,7 @@ from typing import Annotated
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError
 from fastapi.exceptions import HTTPException
-from fastapi import status, Depends
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 
 

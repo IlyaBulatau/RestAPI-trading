@@ -12,6 +12,7 @@ from app.database.models.user import User
 from app.auth.actions import authenticate_user
 from app.utils.helpers import generate_token
 from app.settings.constance import AUTH_ROUTE_URI
+from app.servise.bg_tasks.tasks import send_to_email_log
 
 
 router = APIRouter(prefix=AUTH_ROUTE_URI, tags=["auth"])
@@ -35,6 +36,7 @@ async def signup_process(user: UserAuth):
         new_user: User = await database.create_user_in_db(user)
         user_with_id: User = await database.get_user_by_email(new_user.email)
 
+    send_to_email_log.delay(f"CREATE NEW USER WITH EMAIL: {new_user.email}")
     return UserAuthResponse(
         id=user_with_id.id,
         email=new_user.email,
