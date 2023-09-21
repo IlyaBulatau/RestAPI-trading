@@ -8,6 +8,7 @@ from app.database.connect import get_session
 from app.servise.cache import cache
 from app.settings.constance import USER_ROUTE_URI
 from app.servise.dependens import GET_CURRENT_USER, VALIDATE_USERNAME_REGULAR
+from app.servise.bg_tasks.tasks import send_to_email_log
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 
@@ -26,6 +27,7 @@ router = APIRouter(
     response_description="Return user info by bearer token",
 )
 async def get_me_info(current_user: GET_CURRENT_USER):
+    send_to_email_log.delay("WORK!!!")
     return UserResponseInfo(
         email=current_user.email,
         username=current_user.username,

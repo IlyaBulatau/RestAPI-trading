@@ -16,6 +16,8 @@ pydantic-settings = "^2.0.3"
 passlib = "^1.7.4"
 python-jose = "^3.3.0"
 aioredis = "^2.0.1"
+celery = "^5.3.4"
+redis = "^5.0.0"
 
 
 [tool.poetry.group.test.dependencies]

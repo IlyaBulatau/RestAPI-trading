@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     )
 
     REDIS_HOST: str = "redis"
+    REDIS_PORT: int
 
 
 class DataBaseSettings(Settings):

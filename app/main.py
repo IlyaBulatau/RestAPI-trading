@@ -17,7 +17,6 @@ app = FastAPI(
 setup_app(app)
 
 # TODO - write tests
-# TODO - add logging
 # TODO - add celery for smtp logging
 # TODO - create wallets and ability buy products
 # TODO - create rate limiting
