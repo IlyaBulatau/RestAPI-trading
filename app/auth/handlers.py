@@ -34,11 +34,10 @@ async def signup_process(user: UserAuth):
         database = UserManager(session)
 
         new_user: User = await database.create_user_in_db(user)
-        user_with_id: User = await database.get_user_by_email(new_user.email)
 
     send_to_email_log.delay(f"CREATE NEW USER WITH EMAIL: {new_user.email}")
     return UserAuthResponse(
-        id=user_with_id.id,
+        id=new_user.id,
         email=new_user.email,
         username=new_user.username,
         payload=PayloadForUser(

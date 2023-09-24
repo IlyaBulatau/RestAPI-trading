@@ -129,7 +129,13 @@ class UserManager(Database):
         """
         user_serialization = UserSerializer(user.model_dump()).to_save_in_db()
         new_user = User(**user_serialization)
-        self.session.add(new_user)
+        query = insert(User).values(
+            username=new_user.username,
+            email=new_user.email,
+            hash_password=new_user.hash_password,
+        ).returning(User)
+        result = await self.session.execute(query)
+        new_user = result.scalars().first() 
         return new_user
 
     async def update_user(self, user: User, data: UserUpdate) -> None:

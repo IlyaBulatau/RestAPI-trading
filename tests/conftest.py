@@ -32,7 +32,7 @@ def event_loop() -> Generator:
 
 
 @pytest.fixture(scope="session")
-async def database() -> None:
+async def database(event_loop) -> None:
     """
     Drop old database before testing, if its exists
     And create new database
@@ -58,7 +58,7 @@ async def database() -> None:
 
 
 @pytest.fixture(scope="session")
-def engine() -> AsyncEngine:
+def engine(event_loop) -> AsyncEngine:
     e = create_async_engine(
         url=DB_URL,
         future=True,
@@ -67,13 +67,13 @@ def engine() -> AsyncEngine:
 
 
 @pytest.fixture(scope="session")
-def create_session(engine):
+def create_session(engine, event_loop):
     a_s = async_sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
     yield a_s
 
 
 @pytest.fixture(scope="session")
-async def create_table(engine: AsyncEngine) -> None:
+async def create_table(engine: AsyncEngine, event_loop) -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
