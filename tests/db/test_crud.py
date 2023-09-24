@@ -1,0 +1,6 @@
+class TestUserCRUD:
+    ...
+
+
+class TestProductCRUD:
+    ...
