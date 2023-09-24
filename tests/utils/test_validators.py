@@ -4,11 +4,9 @@ from app.utils.validators import password_validate, username_validate
 
 
 class TestUsernameValidate:
-
     def test_username_validator_positive(self):
         username = "Ilya"
         assert username == username_validate(username)
-
 
     def test_username_validator_negative(self):
         with pytest.raises(ValueError):
@@ -17,12 +15,11 @@ class TestUsernameValidate:
 
 
 class TestPasswordValidate:
-
     negative_test_passwords = [
         "hack_me",
         "dqkppofcmw3fpo3i22",
         "(*%()!%!)",
-    ] 
+    ]
 
     def test_password_validator_positive(self):
         password = "iobpdwd1223*%"

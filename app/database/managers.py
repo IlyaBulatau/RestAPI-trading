@@ -122,10 +122,10 @@ class UserManager(Database):
         users: list[User] | None = result.scalars().all()
         return users
 
-    async def create_user_in_db(self, user: UserAuth) -> UUID:
+    async def create_user_in_db(self, user: UserAuth) -> User:
         """
         Create new user in the database
-        Return UUID the user
+        Return User
         """
         user_serialization = UserSerializer(user.model_dump()).to_save_in_db()
         new_user = User(**user_serialization)

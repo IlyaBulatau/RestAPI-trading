@@ -24,6 +24,7 @@ redis = "^5.0.0"
 black = "^23.9.0"
 pytest = "^7.4.2"
 flake8 = "^6.1.0"
+pytest-asyncio = "^0.21.1"
 
 [build-system]
 requires = ["poetry-core"]
