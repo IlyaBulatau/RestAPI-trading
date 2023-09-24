@@ -13,7 +13,7 @@ class ProductManager(Database):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session)
 
-    async def get_products(self, limit, offset) -> list[Product]:
+    async def get_products(self, limit = 10, offset = 0) -> list[Product]:
         """
         Get all product from database
         Accept:
@@ -68,7 +68,7 @@ class ProductManager(Database):
         return product
 
     async def get_product_by_user_id(
-        self, user_id: UUID, limit: int, offset: int
+        self, user_id: UUID, limit: int = 10, offset: int = 0
     ) -> list[Product]:
         """
         Accept user ID
