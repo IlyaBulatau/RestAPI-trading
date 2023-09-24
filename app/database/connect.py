@@ -8,7 +8,7 @@ from app.servise.bg_tasks.tasks import send_to_email_log
 
 
 async_engine = create_async_engine(
-    url=DataBaseSettings().get_url(), echo=True, future=True
+    url=DataBaseSettings().get_url(), echo=DataBaseSettings().DB_ECHO, future=True
 )
 async_session = async_sessionmaker(
     bind=async_engine, expire_on_commit=False, class_=AsyncSession

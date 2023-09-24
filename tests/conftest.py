@@ -84,3 +84,9 @@ async def session(database, create_table, create_session) -> AsyncSession:
         yield new_session
         await new_session.commit()
         await new_session.close()
+
+
+@pytest.fixture(scope="function")
+async def client(create_session) -> TestClient:
+    cl = TestClient(app)
+    yield cl

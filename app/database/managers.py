@@ -13,7 +13,7 @@ class ProductManager(Database):
     def __init__(self, session: AsyncSession) -> None:
         super().__init__(session)
 
-    async def get_products(self, limit = 10, offset = 0) -> list[Product]:
+    async def get_products(self, limit=10, offset=0) -> list[Product]:
         """
         Get all product from database
         Accept:
@@ -129,13 +129,17 @@ class UserManager(Database):
         """
         user_serialization = UserSerializer(user.model_dump()).to_save_in_db()
         new_user = User(**user_serialization)
-        query = insert(User).values(
-            username=new_user.username,
-            email=new_user.email,
-            hash_password=new_user.hash_password,
-        ).returning(User)
+        query = (
+            insert(User)
+            .values(
+                username=new_user.username,
+                email=new_user.email,
+                hash_password=new_user.hash_password,
+            )
+            .returning(User)
+        )
         result = await self.session.execute(query)
-        new_user = result.scalars().first() 
+        new_user = result.scalars().first()
         return new_user
 
     async def update_user(self, user: User, data: UserUpdate) -> None:
