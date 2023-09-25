@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import Annotated
 
@@ -9,7 +10,7 @@ from app.schemas.token import Token, Payload
 from app.database.managers import UserManager
 from app.database.connect import get_session
 from app.database.models.user import User
-from app.auth.actions import authenticate_user
+from app.auth.actions import authenticate_user, is_exists_user
 from app.utils.helpers import generate_token
 from app.settings.constance import AUTH_ROUTE_URI
 from app.servise.bg_tasks.tasks import send_to_email_log
@@ -30,6 +31,7 @@ async def signup_process(user: UserAuth):
     Handles registration process
     :user - user schemas
     """
+    await is_exists_user(user)
     async with get_session() as session:
         database = UserManager(session)
 

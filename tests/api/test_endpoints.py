@@ -5,8 +5,8 @@ from app.schemas.user import UserAuth
 
 
 class TestUserAuthHandler:
-    username = "Test"
-    email = "test@gmail.com"
+    username = "Testad"
+    email = "ddtest@gmail.com"
     password = "testtest123321$$!"
 
     async def test_signup_handler(self, client: TestClient):
@@ -14,8 +14,6 @@ class TestUserAuthHandler:
             username=self.username, email=self.email, password=self.password
         )
         response = client.post(AUTH_ROUTE_URI + "/signup", data=user.model_dump_json())
-        print(response.json())
-
 
 class TestUserHandler:
     ...
