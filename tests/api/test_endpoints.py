@@ -15,6 +15,7 @@ class TestUserAuthHandler:
         )
         response = client.post(AUTH_ROUTE_URI + "/signup", data=user.model_dump_json())
 
+
 class TestUserHandler:
     ...
 

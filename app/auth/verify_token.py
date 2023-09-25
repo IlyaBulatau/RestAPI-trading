@@ -6,9 +6,6 @@ from app.database.managers import UserManager
 from app.database.connect import get_session
 from app.exeptions import client_exception, client_schemes
 
-from fastapi import status
-from fastapi.exceptions import HTTPException
-
 
 async def verify_token_email(email: str) -> User:
     """

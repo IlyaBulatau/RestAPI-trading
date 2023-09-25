@@ -2,7 +2,6 @@ from app.database.managers import ProductManager, UserManager
 from app.database.models import User, Product
 from app.schemas.user import UserAuth, UserUpdate
 from app.schemas.product import ProductCreate
-from app.database.models.user import User
 from app.utils.helpers import verify_password
 
 

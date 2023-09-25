@@ -15,7 +15,6 @@ from typing import Annotated
 
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError
-from fastapi.exceptions import HTTPException
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 
@@ -73,12 +72,11 @@ async def is_exists_user(user: UserAuth) -> bool:
     # if username or email found in database - the user is exists
     if any([user_from_db_by_email, user_from_db_by_username]):
         raise client_exception.TokenException(
-                status_code=401,
-                detail=client_schemes.TokenExeptionScheme(
+            status_code=401,
+            detail=client_schemes.TokenExeptionScheme(
                 code=401, message="User with username or email is exists"
             ).model_dump(),
         )
-
 
 
 async def get_token_payload(token: Annotated[str, Depends(oauth_schema)]):

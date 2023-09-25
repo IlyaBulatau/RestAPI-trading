@@ -19,7 +19,6 @@ from app.settings.config import DataBaseSettings
 db_settings = DataBaseSettings()
 DB_NAME = "test_app"
 DB_URL = f"postgresql+asyncpg://{db_settings.DB_LOGIN}:{db_settings.DB_PASSWORD}@{db_settings.DB_HOST}:{db_settings.DB_PORT}/{DB_NAME}"
-client = TestClient(app)
 
 
 @pytest.fixture(scope="session")
@@ -67,19 +66,19 @@ def engine(event_loop) -> AsyncEngine:
 
 
 @pytest.fixture(scope="session")
-def create_session(engine, event_loop):
-    a_s = async_sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
-    yield a_s
-
-
-@pytest.fixture(scope="session")
-async def create_table(engine: AsyncEngine, event_loop) -> None:
+async def create_table(engine: AsyncEngine, event_loop, database) -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
+@pytest.fixture(scope="session")
+def create_session(engine):
+    a_s = async_sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
+    yield a_s
+
+
 @pytest.fixture(scope="function")
-async def session(database, create_table, create_session) -> AsyncSession:
+async def session(create_table, create_session) -> AsyncSession:
     async with create_session() as new_session:
         yield new_session
         await new_session.commit()
