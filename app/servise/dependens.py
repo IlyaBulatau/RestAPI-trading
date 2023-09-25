@@ -12,4 +12,3 @@ GET_CURRENT_USER = Annotated[User, Depends(get_current_user)]
 VALIDATE_USERNAME_REGULAR = Annotated[
     str, Path(pattern=r"^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$")
 ]
-GET_SESSION = Annotated[AsyncSession, Depends(get_session)]

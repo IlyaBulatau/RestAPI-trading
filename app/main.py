@@ -17,7 +17,6 @@ app = FastAPI(
 send_to_email_log.delay("SERVER APP")
 setup_app(app)
 
-# TODO - write tests
 # TODO - create wallets and ability buy products
 # TODO - create rate limiting
 # TODO - return headers in responses
