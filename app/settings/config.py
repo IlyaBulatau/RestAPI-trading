@@ -7,10 +7,11 @@ class Settings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", case_sensitive=True, extra="allow"
     )
 
-    APP_DSN: str = "http://localhost:8000/"
+    APP_HOST: str = "localhost"
+    APP_PORT: int = 5555
 
     REDIS_HOST: str = "redis"
-    REDIS_PORT: int
+    REDIS_PORT: int = 6379
 
 
 class DataBaseSettings(Settings):
