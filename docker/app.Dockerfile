@@ -17,7 +17,7 @@ COPY .env .
 
 RUN poetry install --no-interaction --no-ansi
 
-COPY app-entrypoint.sh .
+COPY ./scripts/app-entrypoint.sh .
 
 RUN chmod 777 app-entrypoint.sh
 

@@ -17,7 +17,7 @@ COPY .env .
 
 RUN poetry install --no-interaction --no-ansi
 
-COPY celery-entrypoint.sh .
+COPY ./scripts/celery-entrypoint.sh .
 
 RUN chmod 777 celery-entrypoint.sh
 
