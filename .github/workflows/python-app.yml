@@ -33,7 +33,7 @@ jobs:
 
     - name: Up Celery 
       run: |
-        poetry run celery -A app.service.bg_tasks.tasks:celery worker
+        poetry run celery -A app.servise.bg_tasks.tasks:celery worker
         
     - name: Test with pytest
       run: |
